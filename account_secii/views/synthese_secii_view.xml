@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+        <!-- Vue Liste pour la synthèse des paiements -->
+        <record id="synthese_secii_list" model="ir.ui.view">
+            <field name="name">secii.synthese.list</field>
+            <field name="model">secii.synthese</field>
+            <field name="arch" type="xml">
+                <tree string="Synthèse" create='false' delete="false">
+                    <field name="client" width="1"/>
+                    <field name="total_commandes" width="1"/>
+                    <field name="somme_payee" width="1"/>
+                    <field name="reste" width="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Liste pour le O2M secii enc -->
+        <record id="enc_secii_list" model="ir.ui.view">
+            <field name="name">secii.enc.list</field>
+            <field name="model">secii.enc</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date" width="1"/>
+                    <field name="num_seq" width="1"/>
+                    <field name="commercial" width="1"/>
+                    <field name="libele_op" width="1"/>
+                    <field name="partenaire" width="1"/>
+                    <field name="montant_total" width="1"/>
+                    <field name="somme_paye" width="1"/>
+                    <field name="status" width="1" widget="badge" decoration-success="status == 'paye'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Liste pour le O2M secii vente -->
+        <record id="vente_secii_list" model="ir.ui.view">
+            <field name="name">secii.vente.list</field>
+            <field name="model">secii.vente</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" width="1"/>
+                    <field name="date_order" width="1"/>
+                    <field name="partner_id" width="1"/>
+                    <field name="user_id" width="1"/>
+                    <field name="amount_total" width="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Vue Formulaire la synthèse des paiements -->
+        <record id="synthese_secii_form" model="ir.ui.view">
+            <field name="name">secii.synthese.form</field>
+            <field name="model">secii.synthese</field>
+            <field name="arch" type="xml">
+                <form create='false' edit='false' delete="false">
+                    <header style="margin-top:25px;">
+                        <button name="printer_button" type="object"
+                                string="Imprimer"
+                                class="oe_highlight"
+                                context="{'default_client': client}" icon="fa-print"/>
+                        <button name="whatsapp_button" type="object" string="Envoyer par Whatsapp" icon="fa-whatsapp"/>
+                        <button name="excel_button" type="object" string="Exporter vers Excel" class="oe_highlight" context="{'default_client': client}" icon="fa-solid fa-file-excel-o"/>
+                    </header>
+                    <sheet>
+                        <!--                        <div class="oe_button_box" name="button_box">-->
+                        <!--                            <button class="oe_stat_button" type="object"-->
+                        <!--                                    name="whatsapp_but" icon="fa-pencil-square-o">-->
+                        <!--                                <div class="o_form_field o_stat_info">-->
+                        <!--                                    <span class="o_stat_text">Imprimer</span>-->
+                        <!--                                </div>-->
+                        <!--                            </button>-->
+                        <!--                            <button class="oe_stat_button" type="object"-->
+                        <!--                                    name="whatsapp_but" icon="fa-pencil-square-o">-->
+                        <!--                                <div class="o_form_field o_stat_info">-->
+                        <!--                                    <span class="o_stat_text">Envoyer via Whatsapp</span>-->
+                        <!--                                </div>-->
+                        <!--                            </button>-->
+                        <!--                        </div>-->
+                        <group>
+                            <group>
+                                <field name="client" width="1"/>
+                                <field name="somme_payee" width="1"/>
+                            </group>
+                            <group>
+                                <field name="total_commandes" width="1"/>
+                                <field name="reste" width="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <!--                            <page string="Bon de commandes">-->
+                            <!--                                <field name="saleorder_ids"/>-->
+                            <!--                            </page>-->
+                            <page string="Bon de commandes">
+                                <field name="sale_ids"/>
+                            </page>
+                            <!--                            <page string="Total des encaissements">-->
+                            <!--                                <field name="encaissement_ids"/>-->
+                            <!--                            </page>-->
+                            <page string="Encaissements">
+                                <field name="encaisse_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- actions opening views on models -->
+        <record id="synthese_secii_action" model="ir.actions.act_window">
+            <field name="name">Relevé Client</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">secii.synthese</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="synthese_secii_list"/>
+            <!--            <field name="context">{'search_default_commercial': 1, 'search_default_filtre_semaine': 1}</field>-->
+        </record>
+
+        <!--Action server permettant de définir un domaine pour la commission du commercial-->
+        <record id="action_server_releve_view" model="ir.actions.server">
+            <field name="name">Relevé du Client</field>
+            <field name="model_id" ref="account_secii.model_secii_synthese"/>
+            <field name="state">code</field>
+            <field name="code">action = env['secii.synthese'].fill_form()</field>
+        </record>
+
+<!--        <record id="action_server_whatsapp_view" model="ir.actions.server">-->
+<!--            <field name="name">Envoyer par Whatsapp</field>-->
+<!--            <field name="model_id" ref="account_secii.model_secii_synthese"/>-->
+<!--            <field name="state">code</field>-->
+<!--            <field name="code">action = env['secii.synthese'].remplir_msg()</field>-->
+<!--        </record>-->
+
+
+        <menuitem id="rapports_secii_sous_menu" name="Relevé de comptes clients"
+                  parent="account.menu_finance_receivables"
+                  action="action_server_releve_view"
+                  sequence="111"
+        />
+
+
+    </data>
+</odoo>
