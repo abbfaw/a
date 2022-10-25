@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_secii_yop_tree" model="ir.ui.view">
+        <field name="name">account.yop.tree</field>
+        <field name="model">account.yop</field>
+        <field name="arch" type="xml">
+            <tree string="Mouvement de caisse" js_class="yop_list_dashboard">
+                <header>
+                    <button name="put_validate" class="oe_highlight" type="object"
+                            string="Valider le bon de caisse"/>
+                </header>
+                <field name="name" width="1"/>
+                <field name="libele" width="1"/>
+                <field name="num_facture" width="1" string="num fact" optional="hide"/>
+                <field name="journal_id" width="1" string="Nom banque" optional="hide"/>
+                <field name="company_id" width="1" string="Entreprise" optional="hide"/>
+                <field name="payment_with" width="1" invisible="1"/>
+                <!--                <field name="payment_with_employee" width="1" optional="hide"-->
+                <!--                       attrs="{'invisible':[('payment_with','!=','employee')]}"/>-->
+                <field name="payment_with_other" width="1" optional="hide"
+                       attrs="{'invisible':[('payment_with','=','employee')]}"/>
+                <!--                <field name="beneficiaire_employee" width="1" optional="hide" widget="many2one_avatar_employee"/>-->
+                <field name="beneficiaire_is_fournisseur" invisible="1" optional="hide"/>
+                <field name="check_in_out" width="1" optional="hide"/>
+                <field name="somme" width="1" optional="show"/>
+                <field name="chantier_id" width="1"/>
+                <field name="create_date" width="1"/>
+                <field name="date_prevue" width="1" optional="show"/>
+                <field name="update" width="1" optional="hide"/>
+                <field name="update_by" width="1" optional="hide"/>
+                <field name="visibility" width="1" invisible="1"/>
+                <field name="solde" optional="show" sum="Total Entrée/Sortie" widget='monetary'
+                       options="{'currency_field': 'currency_id'}" decoration-bf="True"/>
+                <field name="status" widget="badge" string="Statut" decoration-info="status == 'brouillon'"
+                       decoration-success="status == 'valide'" decoration-warning="status == 'attente'"/>
+                <button type="object" icon="fa-trash" name="unlink"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_secii_yop_form" model="ir.ui.view">
+        <field name="name">account.yop.form</field>
+        <field name="model">account.yop</field>
+        <field name="arch" type="xml">
+            <form>
+                <header style="margin-top:25px;">
+                    <field name="status" widget="statusbar"/>
+                    <button name="put_suspense" type="object" string="Mettre en attente" style="margin-right:15px;"
+                            class="oe_highlight"
+                            attrs="{'invisible':[('status','in',('valide','attente','comptabilise'))]}"/>
+                    <button name="put_draft" type="object" string="Remettre en brouillon"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|',('from_first','=','coc'),('status','not in',('valide','attente','comptabilise'))]}"/>
+                    <button name="put_validate" type="object" string="Valider le bon de caisse"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|',('etat','=',False),('status','in',('valide','comptabilise'))]}"/>
+                    <button name="comptabilise_operation" type="object" string="Comptabilisé" class="oe_highlight"
+                            attrs="{'invisible':['|',('from_first','=','coc'),('status','in',('brouillon','attente','comptabilise'))]}"/>
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                attrs="{'invisible':['|',('beneficiaire_is','in',('employee','dga','autre')),('facture','!=',True)]}"
+                                name="open_facture" icon="fa-pencil-square-o">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Facture</span>
+                                <span class="o_stat_value">
+                                    <field name="total_facture_with_tax"/>
+                                </span>
+                            </div>
+                        </button>
+                        <button class="oe_stat_button" type="object"
+                                attrs="{'invisible':['|', ('beneficiaire_is','in',('employee','dga','autre')),('status','in',('brouillon','attente','valide'))]}"
+                                name="open_payment" icon="fa-pencil-square-o">
+                            <div class="o_form_field o_stat_info">
+                                <span class="o_stat_text">Paiement</span>
+                                <span class="o_stat_value">
+                                    <field name="total_with_payment"/>
+                                </span>
+                            </div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" text="VALIDE" bg_color="bg-info"
+                            attrs="{'invisible': [('status', '!=', 'valide')]}"
+                            tooltip="cette transaction est validée"/>
+                    <widget name="web_ribbon" text="EN ATTENTE" bg_color="bg-info"
+                            attrs="{'invisible': [('status', '!=', 'attente')]}"
+                            tooltip="cette transaction est en attente"/>
+                    <widget name="web_ribbon" text="ANNULE" bg_color="bg-info"
+                            attrs="{'invisible': [('status', '!=', 'annule')]}"
+                            tooltip="cette transaction est annulée"/>
+                    <widget name="web_ribbon" text="COMPTABILISE" bg_color="bg-warning"
+                            attrs="{'invisible': [('status', '!=', 'comptabilise')]}"
+                            tooltip="cette transaction est comptabilisée"/>
+                    <group>
+                        <group>
+                            <field name="from_first" invisible="1"/>
+                            <field name="create_date"/>
+                            <field name="date_prevue" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="libele" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <!--                                <field name="nature" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>-->
+                            <!--                                <field name="num_bon" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>-->
+                            <field name="etat" invisible="1"/>
+                            <field name="check_in_out" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                        </group>
+                        <group>
+                            <field name="is_prive" string="En instance" groups="account_secii.secii_box_see_all"/>
+                            <field name="facture"
+                                   attrs="{'invisible': ['|','|','|','|',('is_prive','=',True),('check_in_out','=', 'transfer'),('exist_facture','=', True),('hide_boolean','=', True),('beneficiaire_is','=', 'dga')],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="num_facture"
+                                   attrs="{'invisible': [('facture','!=', True)],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="amount_facture"
+                                   attrs="{'invisible': [('facture','!=', True)],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="tax_id"
+                                   attrs="{'invisible': [('facture','!=', True)],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="exist_facture"
+                                   attrs="{'invisible': ['|','|','|','|',('is_prive','=',True),('check_in_out','=', 'transfer'),('facture','=', True),('hide_boolean','=', True),('beneficiaire_is','=', 'dga')],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="exist_facture_select"
+                                   attrs="{'invisible': [('exist_facture','!=', True)],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="num_facture"
+                                   attrs="{'invisible': [('exist_facture','!=', True)],'readonly': ['|',('status', '!=', 'brouillon'),('exist_facture','=', True)]}"/>
+                            <field name="hide_boolean" invisible="1"/>
+                            <field name="somme" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="total_somme" invisible="1"/>
+                            <field name="somme_lettre" invisible="1"/>
+                            <field name="journal_dest" string="Transfert vers"
+                                   domain="[('type', 'in',('cash','bank')),('code', '!=','CAI')]"
+                                   attrs="{'invisible': [('check_in_out','!=', 'transfer')]}" require="True"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="payment_with" invisible="1"
+                                   attrs="{'invisible':[('check_in_out','in',('sortie','transfer'))]}"/>
+                            <!--                            <field name="payment_with_other" attrs="{'invisible':['|','|','|',('payment_with','=','employee'),('payment_with','=','client'),('payment_with','=','autre'),('payment_with','=','fournisseur')],'readonly': [('status', '!=', 'brouillon')], }"/>-->
+                            <field name="payment_with_other"
+                                   attrs="{'invisible':['|',('payment_with','=','employee'),('check_in_out','in',('sortie','transfer'))],'readonly': [('status', '!=', 'brouillon')], }"/>
+                            <field name="payment_with_employee" invisible="1"
+                                   attrs="{'invisible':['|',('payment_with','!=','employee'),('check_in_out','in',('sortie','transfer'))]}"/>
+                            <!--
+                                                        <field name="payment_with_fourn" domain="[('is_company', '=', True)]" attrs="{'invisible':['|','|',('payment_with','=','employee'), ('payment_with','=','client'),('payment_with','=','autre')]}"/>
+                                                        <field name="payment_with_client" domain="[('is_company', '=', True)]"
+                                                               attrs="{'invisible':['|','|',('payment_with','=','employee'), ('payment_with','=','fournisseur'),('payment_with','=','autre')]}"/>
+                                                        <field name="payment_with_other"
+                                                        attrs="{'invisible':['|','|',('payment_with','=','employee'), ('payment_with','=','client'),('payment_with','=','fournisseur')]}"/>
+                                                        -->
+                            <field name="beneficiaire_is"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':[('check_in_out','=','transfer')]}"/>
+                            <field name="beneficiaire_employee" require="1"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','employee'),('check_in_out','in',('entrer','transfer'))]}"/>
+                            <field name="beneficiaire_is_fournisseur" string="Client Bénéficiaire:"
+                                   domain="[('is_company', '=', True)]"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','client'),('check_in_out','=','entrer')]}"/>
+                            <field name="beneficiaire_is_fournisseur" domain="[('is_company', '=', True)]"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','fournisseur'),('check_in_out','in',('entrer','transfer'))]}"/>
+                            <field name="beneficiaire_is_fournisseur" string="Autre Bénéficiaire:"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','autre'),('check_in_out','=','entrer')]}"/>
+                            <field name="beneficiaire_employee" string="Nom employé:" require="1"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','employee'),('check_in_out','in',('sortie','transfer'))]}"/>
+                            <field name="beneficiaire_is_fournisseur" string="Nom client:"
+                                   domain="[('is_company', '=', True)]"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','client'),('check_in_out','=', 'sortie')]}"/>
+                            <field name="beneficiaire_is_fournisseur" string="Nom fournisseur:"
+                                   domain="[('is_company', '=', True)]"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','fournisseur'),('check_in_out','=', 'sortie')]}"/>
+                            <field name="beneficiaire_is_fournisseur" string="Autre:"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible':['|',('beneficiaire_is','!=','autre'),('check_in_out','=', 'sortie')]}"/>
+                        </group>
+
+                        <group style="margin-top:15px;">
+                            <!-- <field name="product_id"/> -->
+                            <field name="chantier_id" options="{'no_create': True}"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="journal_id" invisible="1" options="{'no_create': True}"
+                                   domain="[('type', '=','cash'),('code', '!=','CSH1')]"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible': [('check_in_out','=','entrer')]}"/>
+                            <field name="borderau"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')],'invisible': [('check_in_out','=','transfer')]}"/>
+                            <field name="num_borderau"
+                                   attrs="{'invisible':[('borderau','=',False)],'readonly': [('status', '!=', 'brouillon')]}"/>
+                            <field name="update" invisible="1"/>
+                            <field name="update_by" readonly="1"/>
+                        </group>
+                        <group name="attachment">
+                            <field name="attachment_ids" widget="many2many_binary"
+                                   attrs="{'readonly': [('status', '!=', 'brouillon')]}"
+                                   options="{'accepted_file_extensions':'.png,.jpeg,.jpg,.pdf,.docx,.xlsx'}"/>
+                        </group>
+                        <group>
+                            <field name="note" attrs="{'readonly': [('status', '!=', 'brouillon')]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_secii_yop_search" model="ir.ui.view">
+        <field name="name">account.yop.search</field>
+        <field name="model">account.yop</field>
+        <field name="arch" type="xml">
+            <search string="search">
+                <field name="company_id"/>
+                <field name="chantier_id"/>
+                <field name="libele"/>
+                <separator orientation="vertical"/>
+                <filter string="Date de Création" name="create_date" date="create_date" default_period="this_year"/>
+                <!--                <filter string="FIDECA" name="fideca" domain="[('fideca','=',True)]"/>-->
+                <group expand="1" string="Group By">
+                    <filter string="Société" name="company_id" context="{'group_by':'company_id'}"/>
+                    <filter string="Chantier" name="chantier_id" context="{'group_by':'chantier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_secii_yop_tree_action" model="ir.actions.act_window">
+        <field name="name">Caisse YOPOUGON</field>
+        <field name="res_model">account.yop</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="domain">[('is_prive','=',False)]</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_secii_yop_tree"/>
+    </record>
+
+    <menuitem name="Caisse YOP"
+              id="caisse_yop"
+              parent="caisse_1"
+              action="view_secii_yop_tree_action"
+              sequence="3"
+              groups="account_secii.secii_users,account_secii.secii_box_see_all,account_secii.secii_box_yop"
+
+    />
+
+
+</odoo>
