@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="paperformat_progistack" model="report.paperformat">
+        <field name="name">US Letter</field>
+        <field name="default" eval="True"/>
+        <field name="format">Letter</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">10</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!-- Rapport en Pdf -->
+    <record id="report_secii_synthese_partner" model="ir.actions.report">
+        <field name="name">Bilan client</field>
+        <field name="model">secii.synthese</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">account_secii.report_synthese_partner_view</field>
+        <field name="report_file">account_secii.report_synthese_partner_view</field>
+        <field name="paperformat_id" ref="paperformat_progistack"/>
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Rapport en Xlsx -->
+    <record id="report_secii_synthese_partner_xls" model="ir.actions.report">
+        <field name="name">Bilan client</field>
+        <field name="model">secii.synthese</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">account_secii.report_secii_synthese_partner_xls</field>
+        <field name="report_file">account_secii.report_secii_synthese_partner_xls</field>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_synthese_partner_view">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="page">
+                    <span style="font-size: 85%">Relévé de compte du
+                        <span t-esc="start_date.strftime('%d-%m-%Y')"/>
+                        au
+                        <span t-esc="end_date.strftime('%d-%m-%Y')"/>
+                    </span>
+                    <h6 style="text-align: right">Total Solde Antérieur :
+                        <span t-esc="'{:,}'.format(total_ant).replace(',', ' ')"/>
+                    </h6>
+                    <br/>
+                    <span t-esc="name" style="font-style: bold; font-size: 200%"/>
+                    <br/>
+                    <span style="font-size: 85%">Adresse :
+                        <span t-esc="street"/>
+                    </span>
+                    <br/>
+                    <br/>
+                    <center>
+
+                        <!-- êntete du tableau des valeurs -->
+
+                        <table class="table table-borderless"
+                               style="width: 90%; border-collapse: collapse; border: 1px solid black">
+                            <thead style="border: 1px solid;">
+                                <tr style="border: 1px solid;">
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">Date</span>
+                                    </th>
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">N° Commande</span>
+                                    </th>
+                                    <!--                                    <th style="border: 1px solid" scope="col">-->
+                                    <!--                                        <span style="fontstyle:bold;">Client</span>-->
+                                    <!--                                    </th>-->
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">Désignation</span>
+                                    </th>
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">N° de Bon</span>
+                                    </th>
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">Débit</span>
+                                    </th>
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">Crédit</span>
+                                    </th>
+                                    <!--                                    <th style="border: 1px solid" scope="col">-->
+                                    <!--                                        <span style="fontstyle:bold;">Vendeur</span>-->
+                                    <!--                                    </th>-->
+                                    <th style="border: 1px solid; background-color:#EC634D" scope="col">
+                                        <span style="fontstyle:bold;">Montant</span>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <!-- 1ère ligne du tableau indiquant le total antérieur -->
+
+                            <tr style="border: None;">
+                                <td style="border-left: 1px solid; border-right: 1px solid">
+                                    <!--                                    <span t-esc="date"/>-->
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                    <span style="fontstyle:bold;">ANCIEN SOLDE</span>
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                    <span t-esc="'{:,}'.format(total_ant).replace(',', ' ')"/>
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                    <span style="fontstyle:bold;">0</span>
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                    <span t-esc="'{:,}'.format(total_ant).replace(',', ' ')"/>
+                                </td>
+                            </tr>
+
+                            <!-- tableau des valeurs -->
+
+                            <t t-foreach="all_data" t-as="da">
+                                <tbody style="border: 1px solid; height:500px; display:fixed">
+                                    <tr style="border: None;">
+                                        <td style="border-left: 1px solid; border-right: 1px solid">
+                                            <span t-esc="da['create_date']"/>
+                                            <!--                                            <span t-if="'EN-' in da['designation']"-->
+                                            <!--                                                  t-esc="da['create_date']"/>-->
+                                            <!--                                            <span t-elif="'BL-' in da['designation']"-->
+                                            <!--                                                  t-esc="da['date_effective']"/>-->
+                                            <!--                                            <span t-else=""-->
+                                            <!--                                                  t-esc="da['create_date']"/>-->
+                                        </td>
+                                        <td style=" border-right: 1px solid">
+                                            <span t-esc="da['name']"/>
+                                        </td>
+                                        <td style=" border-right: 1px solid">
+                                            <span t-esc="da['designation']"/>
+                                        </td>
+                                        <td style=" border-right: 1px solid">
+                                            <span t-esc="da['numero_bon']"/>
+                                        </td>
+                                        <td style=" border-right: 1px solid">
+                                            <span t-esc="'{:,}'.format(da['debit']).replace(',', ' ')"/>
+                                        </td>
+                                        <td style=" border-right: 1px solid">
+                                            <span t-esc="'{:,}'.format(da['credit']).replace(',', ' ')"/>
+                                        </td>
+                                        <td style=" border-right: 1px solid">
+                                            <span t-esc="'{:,}'.format(da['solde']).replace(',', ' ')"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </t>
+
+                            <!-- difference entre le total des ventes et des encaissements -->
+
+                            <tr style="border: 1px solid;">
+                                <td style="border-left: 1px solid; border-right: 1px solid" colspan="3">
+                                </td>
+                                <td style=" border-right: 1px solid">
+                                </td>
+                                <td style="border-left: 1px solid; border-right: 1px solid">
+                                    <span t-esc="'{:,}'.format(total_vente).replace(',', ' ')"/>
+                                </td>
+                                <td style="border-left: 1px solid; border-right: 1px solid">
+                                    <span t-esc="'{:,}'.format(total_somme).replace(',', ' ')"/>
+                                </td>
+                                <td style="border-left: 1px solid; border-right: 1px solid">
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Message de fin avec le total dû par le client -->
+                        <table class="table table-borderless" style="width: 90%;border: None;">
+                            <tr style="border: None;">
+                                <td style="border: None;" colspan="4">
+                                    <span style="font-size: 18px; font-style: bold;">Sauf erreur ou omission, votre
+                                        solde est de :
+                                    </span>
+                                </td>
+                                <td style="border: None; background-color:#A29F9E">
+                                    <span t-esc="'{:,}'.format(total_final).replace(',', ' ')"
+                                          style="font-style: bold; font-size: 18px;"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Ajout du Crédit Client si il y'en a -->
+                        <t t-if="credit_client > 0">
+                            <table class="table table-borderless" style="width: 90%;border: None;">
+                                <tr style="border: None;">
+                                    <td style="border: None;" colspan="4">
+                                        <span style="font-size: 18px; font-style: bold;">Votre crédit client s'élève à
+                                            la somme de : <span t-esc="'{:,}'.format(credit_client).replace(',', ' ')"
+                                              style="font-style: bold; font-size: 18px;"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                    </center>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
+
+
