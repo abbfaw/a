@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="custom_inherit_stock_picking_form" model="ir.ui.view">
+        <field name="name">inherited.stock.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <field name="picking_type_id" position="after">
+                <field name="is_prive" groups="account_secii.sale_secii_box_see_all" string="En instance"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="sale_prive_user_action_picking_tree_all" model="ir.actions.act_window">
+            <field name="name">Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,kanban,form,calendar</field>
+            <field name="domain">[('is_prive','=',False)]</field>
+            <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No transfer found. Let's create one!
+                </p><p>
+                    Transfers allow you to move products from one location to another.
+                </p>
+            </field>
+    </record>
+    <record id="sale_prive_manager_action_picking_tree_all" model="ir.actions.act_window">
+            <field name="name">Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,kanban,form,calendar</field>
+            <field name="domain"></field>
+            <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0]}</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No transfer found. Let's create one!
+                </p><p>
+                    Transfers allow you to move products from one location to another.
+                </p>
+            </field>
+    </record>
+
+     <menuitem name="Transferts"
+              id="sale_private_user_transfer"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="sale_prive_user_action_picking_tree_all"
+              sequence="-1"
+              groups="account_secii.sale_secii_users"
+        />
+    <menuitem name="Transferts"
+              id="sale_private_manager_transfer"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="sale_prive_manager_action_picking_tree_all"
+              sequence="-1"
+              groups="account_secii.sale_secii_box_see_all"
+        />
+    <menuitem id="stock.all_picking" active="False"/>
+<!--    <menuitem id="sale.menu_sale_order" active="False"/>-->
+
+</odoo>
