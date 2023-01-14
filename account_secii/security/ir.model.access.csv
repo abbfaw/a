@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_secii_caisse,secii.caisse,model_account_secii,,1,1,1,1
+access_secii_encaissement,secii.encaissement,model_secii_encaissement,,1,1,1,1
+access_secii_commission,secii.commission,model_secii_commission,,1,1,1,1
+access_account_yop,account.yop,model_account_yop,,1,1,1,1
+access_secii_rapport,secii.rapport,model_secii_rapport,,1,1,1,1
+access_secii_synthese,secii.synthese,model_secii_synthese,,1,1,1,1
+access_secii_enc,secii.enc,model_secii_enc,,1,1,1,1
+access_secii_vente,secii.vente,model_secii_vente,,1,1,1,1
+access_secii_whatsapp,secii.whatsapp,model_secii_whatsapp,,1,1,1,1
+access_purchase_encaissement,purchase.encaissement,model_purchase_encaissement,,1,1,1,1
+access_tracking_partner,tracking.partner,model_tracking_partner,,1,1,1,1
+access_secii_dashboard,secii.dashboard,model_secii_dashboard,,1,1,1,1
