@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Suivi Clients & Fournissurs additionnels -->
+    <record id="tracking_instance_partner_list" model="ir.ui.view">
+        <field name="name">tracking.partner.list</field>
+        <field name="model">tracking.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Tracking" create="false" edit="false">
+                <header>
+                    <button name="update_purchase_order" type="object" string="update"
+                            class="oe_highlight" icon="fa-print"/>
+                    <button name="update_vendor_partner_type" type="object" string="update partner"
+                            class="oe_highlight" icon="fa-print"/>
+                </header>
+                <field name="date" width="1" optional="show"/>
+                <field name="partner" width="1" optional="show"/>
+                <field name="reference" width="1" optional="show"/>
+                <field name="designation" width="1" optional="show"/>
+                <field name="payment_method" width="1" optional="show"/>
+                <field name="libele_op" width="1" optional="show"/>
+                <field name="amount_currency" sum="Montant" width="1" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Suivi Clients & Fournissurs -->
+    <record id="tracking_partner_normal_list" model="ir.ui.view">
+        <field name="name">tracking.partner.normal.list</field>
+        <field name="model">tracking.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Tracking" create="false" edit="false">
+                <header>
+                    <button name="update_purchase_order" type="object" string="Mettre à jour"
+                            class="oe_highlight" icon="fa-print"/>
+                </header>
+                <field name="date" width="1" optional="show"/>
+                <field name="partner" width="1" optional="show"/>
+                <field name="reference" width="1" optional="show"/>
+                <field name="designation" width="1" optional="show"/>
+                <field name="payment_method" width="1" optional="show"/>
+                <field name="libele_op" width="1" optional="show"/>
+                <field name="amount_currency" sum="Montant" width="1" optional="show"/>
+
+            </tree>
+        </field>
+    </record>
+
+    <!-- Suivi Clients Consolidés -->
+    <record id="tracking_partner_consolide_list" model="ir.ui.view">
+        <field name="name">tracking.partner.consolide</field>
+        <field name="model">tracking.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Tracking" create="false" edit="false">
+                <header>
+                    <button name="update_purchase_order" type="object" string="update"
+                            class="oe_highlight" icon="fa-print"/>
+                </header>
+                <field name="date" width="1" optional="show"/>
+                <field name="partner" width="1" optional="show"/>
+                <field name="reference" width="1" optional="show"/>
+                <field name="designation" width="1" optional="show"/>
+                <field name="payment_method" width="1" optional="show"/>
+                <field name="libele_op" width="1" optional="show"/>
+                <field name="amount_currency" sum="Montant" width="1" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="tracking_partner_view_search" model="ir.ui.view">
+        <field name="name">tracking.partner.search</field>
+        <field name="model">tracking.partner</field>
+        <field name="arch" type="xml">
+            <search string="search partner">
+                <field name="reference" filter_domain="['|', ('partner','ilike',self), ('reference','ilike',self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Clients" name="partner" domain="[]" context="{'group_by': 'partner'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--    <record id="tracking_partner_view_filter_consolide" model="ir.ui.view">-->
+    <!--        <field name="name">tracking.partner.search</field>-->
+    <!--        <field name="model">tracking.partner</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <search string="search partner">-->
+    <!--                <group expand="0" string="Group By">-->
+    <!--                    <filter string="Clients" name="partner" domain="[]" context="{'group_by': 'partner'}"/>-->
+    <!--                </group>-->
+    <!--            </search>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <!-- Suivi Fournisseurs additionnels action avec instance -->
+    <record id="tracking_partner_action" model="ir.actions.act_window">
+        <field name="name">Suivi Fournisseurs additionnels</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tracking.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tracking_instance_partner_list"/>
+        <field name="context">{'search_default_partner':1}</field>
+        <field name="domain">[('not_instance','=', False),('partner_type','=','vendor')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                aucune information disponible
+            </p>
+
+        </field>
+    </record>
+
+    <!--    suivi client additionnnel action avec instance -->
+    <record id="tracking_partner_client_action" model="ir.actions.act_window">
+        <field name="name">Suivi Clients additionnels</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tracking.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tracking_instance_partner_list"/>
+        <field name="context">{'search_default_partner':1}</field>
+        <field name="domain">[('not_instance','=', False),('partner_type','=','customer')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                aucune information disponible
+            </p>
+
+        </field>
+    </record>
+
+    <!--   Suivi Fournisseurs normal action sans instance -->
+    <record id="tracking_partner_normal_action" model="ir.actions.act_window">
+        <field name="name">Suivi Fournisseurs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tracking.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tracking_partner_normal_list"/>
+        <field name="context">{'search_default_partner':1}</field>
+        <field name="domain">[('not_instance','=', True),('partner_type','=','vendor')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                aucune information disponible
+            </p>
+
+        </field>
+    </record>
+
+    <!--    suivi clients normal action sans instance -->
+    <record id="tracking_partner_normal_client_action" model="ir.actions.act_window">
+        <field name="name">Suivi Clients</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tracking.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tracking_partner_normal_list"/>
+        <field name="context">{'search_default_partner':1}</field>
+        <field name="domain">[('not_instance','=', True),('partner_type','=','customer')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                aucune information disponible
+            </p>
+
+        </field>
+    </record>
+
+    <!--    suivi consolide action-->
+    <record id="tracking_partner_normal_action_consolide" model="ir.actions.act_window">
+        <field name="name">Suivi Consolide</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tracking.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tracking_partner_consolide_list"/>
+        <field name="domain">[('partner_type','=','vendor')]</field>
+        <field name="context">{'search_default_partner':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                aucune information disponible
+            </p>
+
+        </field>
+    </record>
+
+    <!--    suivi consolide clients action-->
+    <record id="tracking_partner_normal_consolide_client_action" model="ir.actions.act_window">
+        <field name="name">Suivi Consolide Client</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">tracking.partner</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="tracking_partner_consolide_list"/>
+        <field name="domain">[('partner_type','=','customer')]</field>
+        <field name="context">{'search_default_partner':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                aucune information disponible
+            </p>
+
+        </field>
+    </record>
+
+    <!--rapport fournisseur-->
+    <menuitem name="Rapport de suivi"
+              id="rapports_partner_tracking"
+              parent="account.menu_finance_payables"
+              sequence="22"
+    />
+
+    <!--    rapport client-->
+    <menuitem name="Rapport de suivi"
+              id="rapports_partner_tracking_client"
+              parent="account.menu_finance_receivables"
+              sequence="17"
+    />
+
+    <!--    suivi additionnel fournisseur-->
+    <menuitem name="Suivi fournisseurs additionnels"
+              id="rapports_partner_instance"
+              parent="rapports_partner_tracking"
+              action="tracking_partner_action"
+              sequence="2"
+    />
+
+    <!--    suivi additionnel client-->
+    <menuitem name="Suivi client additionnels"
+              id="rapports_partner_instance_client"
+              parent="rapports_partner_tracking_client"
+              action="tracking_partner_client_action"
+              sequence="2"
+    />
+
+    <!--    Suivi fournisseurs-->
+    <menuitem name="Suivi fournisseurs "
+              id="rapports_partner_normal"
+              parent="rapports_partner_tracking"
+              action="tracking_partner_normal_action"
+              sequence="1"
+    />
+
+    <!--    suivi client-->
+    <menuitem name="Suivi client "
+              id="rapports_partner_normal_client"
+              parent="rapports_partner_tracking_client"
+              action="tracking_partner_normal_client_action"
+              sequence="1"
+    />
+
+    <!--    suivi consolide fournisseur-->
+    <menuitem name="Suivi Consolide Fournisseur"
+              id="rapports_partner_consolide"
+              parent="rapports_partner_tracking"
+              action="tracking_partner_normal_action_consolide"
+              sequence="3"
+    />
+
+    <!--    suivi consolide client-->
+    <menuitem name="Suivi Consolide Client"
+              id="rapports_partner_consolide_client"
+              parent="rapports_partner_tracking_client"
+              action="tracking_partner_normal_consolide_client_action"
+              sequence="3"
+    />
+
+</odoo>
