@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="custom_inherit_sale_order_form" model="ir.ui.view">
+        <field name="name">inherited.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_shipping_id" position="after">
+                <field name="is_prive" groups="account_secii.sale_secii_box_see_all" string="En instance"/>
+            </field>
+            <xpath expr="//button[@name='action_confirm'][1]" position="attributes">
+                <attribute name="groups">account_secii.sale_secii_box_confirm_invoice</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+                <attribute name="groups">account_secii.sale_secii_box_confirm_invoice</attribute>
+            </xpath>
+
+            <!-- Remplacement du groupe détails des ventes -->
+            <xpath expr="//group[@name='order_details']" position="replace">
+                <!--                <field name="date_effective"/>-->
+                <group name="order_details">
+                    <field name="validity_date" attrs="{'invisible': [('state', 'in', ['sale', 'done'])]}"/>
+                    <div class="o_td_label" groups="base.group_no_one"
+                         attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}">
+                        <label for="date_effective" string="Date de Commande"/>
+                    </div>
+                    <field name="date_effective" nolabel="1" groups="base.group_no_one"
+                           attrs="{'invisible': [('state', 'in', ['sale', 'done', 'cancel'])]}"/>
+                    <div class="o_td_label" attrs="{'invisible': [('state', 'in', ['draft', 'sent'])]}">
+                        <label for="date_effective" string="Date Effective"/>
+                    </div>
+                    <field name="date_effective"
+                           attrs="{'required': [('state', 'in', ['sale', 'done'])], 'invisible': [('state', 'in', ['draft', 'sent'])]}"
+                           nolabel="1"/>
+                    <field name="show_update_pricelist" invisible="1"/>
+                    <label for="pricelist_id" groups="product.group_product_pricelist"/>
+                    <div groups="product.group_product_pricelist" class="o_row">
+                        <field name="pricelist_id" options="{'no_open':True,'no_create': True}"/>
+                        <button name="update_prices" type="object" string=" Update Prices"
+                                help="Recompute all prices based on this pricelist" class="btn-link mb-1 px-0"
+                                icon="fa-refresh"
+                                confirm="This will update all unit prices based on the currently set pricelist."
+                                attrs="{'invisible': ['|', ('show_update_pricelist', '=', False), ('state', 'in', ['sale', 'done','cancel'])]}"/>
+                    </div>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="tax_country_id" invisible="1"/>
+                    <field name="payment_term_id" options="{'no_open':True,'no_create': True}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="custom_inherit_sale_order_tree" model="ir.ui.view">
+        <field name="name">inherited.sale.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="is_prive" invisible="1" string="En instance"/>
+            </field>
+            <xpath expr="//tree/field[@name='create_date']" position="replace">
+                <field name="date_effective" widget="date" width="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_quotations_with_onboarding_user_secii" model="ir.actions.act_window">
+        <field name="name">Devis</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="context">{'search_default_my_quotation': 1}</field>
+        <field name="domain">[('is_prive','=',False)]</field>
+    </record>
+    <record id="action_quotations_with_onboarding_manager_secii" model="ir.actions.act_window">
+        <field name="name">Devis</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="context">{'search_default_my_quotation': 1}</field>
+    </record>
+
+    <record id="sale_user_action_orders" model="ir.actions.act_window">
+        <field name="name">Commandes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="context">{}</field>
+        <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),('is_prive','=',False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+                Once the quotation is confirmed, it becomes a sales order.
+                <br/>
+                You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+    <record id="sale_manager_action_orders" model="ir.actions.act_window">
+        <field name="name">Commandes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="context">{}</field>
+        <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+                Once the quotation is confirmed, it becomes a sales order.
+                <br/>
+                You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+
+    <!--    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">-->
+    <!--            <field name="domain">[('is_prive','=',True),('user_con','=',True)]</field>-->
+    <!--    </record>-->
+
+
+    <menuitem name="Devis"
+              id="sale_user_devis"
+              parent="sale.sale_order_menu"
+              action="action_quotations_with_onboarding_user_secii"
+              sequence="-2"
+              groups="account_secii.sale_secii_users,account_secii.secii_devis"
+    />
+    <menuitem name="Devis"
+              id="sale_manager_devis"
+              parent="sale.sale_order_menu"
+              action="action_quotations_with_onboarding_manager_secii"
+              sequence="-2"
+              groups="account_secii.sale_secii_box_see_all"
+    />
+    <menuitem name="commandes"
+              id="sale_user_commande"
+              parent="sale.sale_order_menu"
+              action="sale_user_action_orders"
+              sequence="-1"
+              groups="account_secii.sale_secii_users"
+    />
+    <menuitem name="commandes"
+              id="sale_manager_commande"
+              parent="sale.sale_order_menu"
+              action="sale_manager_action_orders"
+              sequence="-1"
+              groups="account_secii.sale_secii_box_see_all"
+    />
+    <menuitem id="sale.menu_sale_quotations" active="False"/>
+    <menuitem id="sale.menu_sale_order" active="False"/>
+
+    <!--    <record model='ir.ui.menu' id='sale.menu_sale_quotations'>-->
+    <!--        <field name="groups_id" eval="[(4,ref('account_secii.sale_secii_box_see_all'))]"/>-->
+    <!--    </record>-->
+    <!--    <record model='ir.ui.menu' id='sale.menu_sale_order'>-->
+    <!--        <field name="groups_id" eval="[(6,0,[ref('account_secii.sale_secii_box_see_all'))]]"/>-->
+    <!--    </record>-->
+
+</odoo>
