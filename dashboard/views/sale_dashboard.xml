@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_report_view_pivot_new" model="ir.ui.view">
+         <field name="name">sale.report.pivot</field>
+         <field name="model">sale.report</field>
+         <field name="arch" type="xml">
+             <pivot string="Sales Analysis" default_order='price_total desc' display_quantity="1">
+                 <field name="partner_id" type="row"/>
+                 <!-- <field name="order_id" type="measure"/> -->
+                 <field name="price_total" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record id="view_order_product_graph_inherit" model="ir.ui.view">
+         <field name="name">sale.report.graph.inherit</field>
+         <field name="model">sale.report</field>
+         <field name="inherit_id" ref="sale.view_order_product_graph" />
+         <field name="arch" type="xml">
+            <xpath expr="//graph" position="attributes">
+                <attribute name="type">bar</attribute>
+                <attribute name="stacked">0</attribute>
+            </xpath>
+
+             <field name="date" position="attributes">
+                <attribute name="interval">month</attribute>
+             </field>
+             <field name="date" position="after">
+                <field name="company_id" />
+             </field>
+
+             <field name="price_subtotal" position="replace">
+                <field name="price_total" type="measure" />
+             </field>
+         </field>
+    </record>
+
+    <record id="view_order_product_search_inherit" model="ir.ui.view">
+        <field name="name">sale.report.search.inherit</field>
+        <field name="model">sale.report</field>
+        <field name="inherit_id" ref="sale.view_order_product_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_date']" position="after">
+                <filter name="filter_30_d" string="30 derniers jours" domain="[
+                    ('date', '&gt;=', (datetime.datetime.combine(context_today() + relativedelta(days=-31), datetime.time(0,0,0)).to_utc()).strftime('%Y-%m-%d %H:%M:%S'))
+                    ]" />
+                <filter name="filter_3_mth" string="3 derniers mois" domain="[
+                    ('date', '&gt;=', (datetime.datetime.combine(context_today() + relativedelta(months=-3), datetime.time(0,0,0)).to_utc()).strftime('%Y-%m-%d %H:%M:%S'))
+                    ]" />
+                <filter name="filter_6_mth" string="6 derniers mois" domain="[
+                    ('date', '&gt;=', (datetime.datetime.combine(context_today() + relativedelta(months=-6), datetime.time(0,0,0)).to_utc()).strftime('%Y-%m-%d %H:%M:%S'))
+                    ]" />
+
+                <filter name="filter_date_last_month" date="date" default_period="last_month" invisible="1" />
+
+            </xpath>
+            <xpath expr="//filter[@name='User']" position="attributes">
+                <attribute name="string">Meilleurs vendeurs</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='Customer']" position="attributes">
+                <attribute name="string">Meilleurs clients</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='Customer']" position="after">
+                <filter string="Meilleurs Clients Payeur" name="ClientPayeur" context="{'group_by':'partner_id'}"/>
+            </xpath>
+            <xpath expr="//filter[@name='Product']" position="attributes">
+                <attribute name="string">Articles les plus vendus</attribute>
+            </xpath>
+            <xpath expr="//filter[@name='Category']" position="attributes">
+                <attribute name="string">Meilleurs catégories d'article</attribute>
+            </xpath>
+            
+
+            <xpath expr="//filter[@name='sales_channel']" position="replace">
+            </xpath>
+            <xpath expr="//filter[@name='country_id']" position="replace">
+            </xpath>
+            <xpath expr="//filter[@name='industry_id']" position="replace">
+            </xpath>
+            <!-- <xpath expr="//filter[@name='date']" position="replace">
+            </xpath> -->
+
+            <filter name="filter_date" position="attributes">
+                <attribute name="string">Période en cours</attribute>
+            </filter>
+            <filter name="date" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="status" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </filter>
+            <filter name="company" position="attributes">
+                <attribute name="string">Meilleures succursales</attribute>
+            </filter>
+        </field>
+    </record>
+
+    <record id="sale_report_view_total_dashboard" model="ir.ui.view">
+        <field name="name">sale.report.view.total.dashboard</field>
+        <field name="model">sale.report</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <dashboard sample="1">
+                <view type="graph" ref="sale.view_order_product_graph"/>
+                <group>
+                    <group>
+                        <aggregate name="price_subtotal_confirmed_orders" string="Total Sales" field="price_total" help="Total, Tax Included" />
+                        <aggregate name="price_subtotal_all_orders" string="Untaxed Total" field="price_subtotal"/>
+                        <aggregate name="order_id_confirmed_orders" field="order_id" string="Orders"/>
+                        <formula name="total" string="Average Order" value="record.price_subtotal_confirmed_orders / record.order_id_confirmed_orders" />
+                        <aggregate name="customers" string="# Customers" field="partner_id" clickable="False"/>
+                        <aggregate name="lines" string="# Lines" field="nbr"/>
+                    </group>
+                    <group col="1">
+                        <widget name="pie_chart" title="Succursales" attrs="{'groupby': 'company_id'}"/>
+                    </group>
+                </group>
+            </dashboard>
+        </field>
+    </record>
+
+    <record id="sale_report_view_indicateurs_dashboard" model="ir.ui.view">
+        <field name="name">sale.report.view.indicateurs.dashboard</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <dashboard>
+                <group>
+                    <view type="pivot" ref="sale_report_view_pivot_new"/>
+                </group>
+            </dashboard>
+        </field>
+    </record>
+
+    <!-- <record id="ir_actions_dashboard_action_sale" model="ir.actions.act_window">
+        <field name="name">Tableau de bord des ventes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">dashboard</field>
+        <field name="search_view_id" ref="sale.view_order_product_search"/>
+        <field name="context" eval="{
+                'search_default_Sales': 1,
+                'search_default_filter_date': 1}"/>
+        <field name="view_id" ref="sale_enterprise.sale_report_view_dashboard" />
+
+    </record> -->
+
+    <record id="ir_actions_dashboard_action_sale" model="ir.actions.server">
+        <field name="name">action.dashboard.sale</field>
+        <field name="model_id" ref="model_sale_report" />
+        <field name="state">code</field>
+        <field name="code">
+            action = model._action_dashboard_sale()
+        </field>
+    </record>
+
+    <record id="ir_actions_dashboard_action_sale_order" model="ir.actions.server">
+        <field name="name">action.dashboard.sale</field>
+        <field name="model_id" ref="model_sale_report" />
+        <field name="state">code</field>
+        <field name="code">
+            action = model._action_dashboard_sale_order()
+        </field>
+    </record>
+
+    <record id="ir_actions_dashboard_action_sale_indicateurs" model="ir.actions.server">
+        <field name="name">action.dashboard.sale</field>
+        <field name="model_id" ref="model_sale_report" />
+        <field name="state">code</field>
+        <field name="code">
+            action = model._action_dashboard_sale_indicateurs()
+        </field>
+    </record>
+
+    <record id="ir_actions_dashboard_action_sale_pivot" model="ir.actions.act_window">
+        <field name="name">Tableau de bord des ventes de pivot</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="sale.view_order_product_graph" />
+
+    </record>
+
+    <!--My Dashboard Menu-->
+    <menuitem 
+        id="board.menu_board_my_dash"
+        parent="base.menu_board_root"
+        name="Ventes"
+        action="ir_actions_dashboard_action_sale"
+        sequence="1" active="True" />
+
+    <menuitem
+        id="sale_dashboard_menu"
+        name="Ventes"
+        parent="board.menu_board_my_dash"
+        action="ir_actions_dashboard_action_sale"
+        sequence="2"/>
+
+</odoo>

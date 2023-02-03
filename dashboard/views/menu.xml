@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <menuitem 
+        id="board.menu_board_my_dash"
+        parent="base.menu_board_root"
+        name="Tableau de bord"
+        action="dashboard.ir_actions_dashboard_action_sale"
+        sequence="1" />
+
+	<!-- Menu Ventes-->
+    <menuitem
+        id="sale_dashboard_menu"
+        name="Vente en gros"
+        parent="board.menu_board_my_dash"
+        sequence="2"/>
+
+    <menuitem
+        id="all_sale_dashboard_menu"
+        name="Total Devis + BC"
+        parent="sale_dashboard_menu"
+        action="dashboard.ir_actions_dashboard_action_sale"
+        sequence="2"/>
+
+    <menuitem
+        id="sale_order_dashboard_menu"
+        name="Total BC"
+        parent="sale_dashboard_menu"
+        action="dashboard.ir_actions_dashboard_action_sale_order"
+        sequence="3"/>
+
+    <menuitem
+        id="sale_indicateurs_dashboard_menu"
+        name="Indicateurs BC"
+        parent="sale_dashboard_menu"
+        action="dashboard.ir_actions_dashboard_action_sale_indicateurs"
+        sequence="1"/>
+
+
+    <!-- Menu POS -->
+    <menuitem
+        id="pos_dashboard_menu"
+        name="Ventes en Détail"
+        parent="board.menu_board_my_dash"
+        sequence="1"
+        active="False"
+        />
+
+    <menuitem
+        id="pos_dashboard_menu_indicateur"
+        name="Indicateurs POS"
+        parent="dashboard.pos_dashboard_menu"
+        action="pos_dashboard.pos_report_action_indicateurs_dashboard"
+        sequence="1"
+        />
+    <menuitem
+        id="pos_dashboard_menu_total"
+        name="Total ventes en détail"
+        parent="dashboard.pos_dashboard_menu"
+        action="pos_dashboard.pos_report_action_total_dashboard"
+        sequence="2"
+        />
+
+    <!-- Menu Achats -->
+    <menuitem
+        id="purchase_dashboard_menu"
+        name="Achats"
+        parent="board.menu_board_my_dash"
+        sequence="3"/>
+
+    <menuitem
+        id="purchase_dashboard_menu_indicateur"
+        name="Indicateurs Achats"
+        parent="purchase_dashboard_menu"
+        action="dashboard.ir_actions_dashboard_action_indicateurs_purchase"
+        sequence="1"/>
+
+    <menuitem
+        id="purchase_dashboard_menu_total"
+        name="Total Achats"
+        parent="purchase_dashboard_menu"
+        action="dashboard.ir_actions_dashboard_action_total_purchase"
+        sequence="2"/>
+    
+</odoo>

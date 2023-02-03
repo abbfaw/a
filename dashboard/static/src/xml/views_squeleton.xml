@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+	<template t-inherit="web.ReportViewMeasures" t-inherit-mode="extension">
+		<xpath expr="//t[@t-set-slot='toggler']" position="replace">
+			<t t-set-slot="toggler">
+				Ordonnées <i class="fa fa-caret-down ml-1"/>
+			</t>
+		</xpath>
+	</template>
+
+	<template t-inherit="web.GroupByMenu" t-inherit-mode="extension">
+		<xpath expr="//span[hasclass('o_dropdown_title')]" position="replace">
+			<span class="o_dropdown_title">
+				Abscisses <t t-if="props.showCaretDown"> <i class="fa fa-caret-down ml-1"/></t>
+			</span>
+		</xpath>
+	</template>
+
+	<template t-inherit="web.PivotView.Buttons" t-inherit-mode="extension">
+		 <xpath expr="//div[@t-on-dropdown-item-selected='onMeasureSelected']" position="replace">
+		</xpath>
+	</template>
+	
+</odoo>
