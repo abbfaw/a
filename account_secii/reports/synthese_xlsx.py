@@ -1,0 +1,347 @@
+from odoo import api, fields, models
+from datetime import datetime
+import pytz
+from xlsxwriter import worksheet
+
+
+class RapportClientXlsx(models.AbstractModel):
+    _name = 'report.account_secii.report_secii_synthese_partner_xls'
+    _inherit = 'report.report_xlsx.abstract'
+    _description = 'Rapport de ventes et encaissements Excel'
+
+    def _default_time_utc(self):
+        locale_time = datetime.now()
+        dt_utc = locale_time.astimezone(pytz.UTC)
+        return dt_utc
+
+    def generate_xlsx_report(self, workbook, data, rapport):
+        print('Debut rappor Xlsx')
+        all_vals = {}
+        tbl = []
+        all_data = []
+        amount = 0
+        print('tu es mt 07571.........10861', data)
+        partner_id = data.get('partner')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        scrap = self.env['res.partner'].sudo().search([('id', '=', partner_id)])
+        name = scrap.name
+        print('Scrap name', name)
+        street = scrap.street
+        Date = datetime.now().strftime('%Y-%m-%d')
+        tracking = self.env['tracking.partner'].sudo()
+        sale_order = self.env['sale.order'].sudo()
+        purchase_order = self.env['purchase.order'].sudo()
+        account_move = self.env['account.move'].sudo()
+        account_payment = self.env['account.payment'].sudo()
+        secii_encaissement = self.env['secii.encaissement'].sudo()
+        # retour = self.env['purchase.order'].sudo()
+        print('partner_id', partner_id)
+
+        """ Recherche des IDS de tous les modules """
+        find_account_move_id = account_move.search(
+            [('partner_id', '=', partner_id), ('create_date', '>=', start_date), ('create_date', '<=', end_date),
+             ('state', '=', 'posted'), ('move_type', 'in', ('out_invoice', 'out_refund'))])
+        print('FActure', find_account_move_id)
+
+        find_account_payment_id = account_payment.search(
+            [('partner_id', '=', partner_id), ('create_date', '>=', start_date), ('create_date', '<=', end_date),
+             ('state', '=', 'posted'), ('partner_type', '=', 'customer')])
+
+        find_sale_order_id = sale_order.search(
+            [('partner_id', '=', partner_id), ('create_date', '>=', start_date), ('create_date', '<=', end_date),
+             ('is_prive', '=', True), ('state', '=', 'sale')])
+
+        find_purchase_order_id = purchase_order.search(
+            [('partner_id', '=', partner_id), ('create_date', '>=', start_date), ('create_date', '<=', end_date),
+             ('state', '=', 'purchase'), ('is_prive', '=', True), ('retour', '=', True), ])
+
+        find_secii_encaissement_id = secii_encaissement.search(
+            [('partenaire', '=', partner_id), ('create_date', '>=', start_date), ('create_date', '<=', end_date),
+             ('instance', '=', True), ('status', '=', 'paye')])
+
+        """concaténation de toutes les Dates"""
+        all_date = find_sale_order_id.mapped('create_date') + find_purchase_order_id.mapped(
+            'create_date') + find_account_move_id.mapped('create_date') + find_account_payment_id.mapped(
+            'create_date') + find_secii_encaissement_id.mapped('create_date')
+        tri_date = sorted(all_date)
+        print('ALL DATE', tri_date)
+
+        """ Recherche de tous ce qui est passés """
+        past_amount_currency = sum(tracking.search(
+            [('partner', '=', partner_id), ('date', '<', start_date), ('partner_type', '=', 'customer')]).mapped(
+            'amount_currency'))
+        print('PAST AMount', past_amount_currency)
+
+        total_amount_currency = sum(tracking.search(
+            [('partner', '=', partner_id), ('date', '>=', start_date), ('date', '<=', end_date),
+             ('partner_type', '=', 'customer')]).mapped(
+            'amount_currency'))
+        print('Total AMount', total_amount_currency)
+
+        # print('Tracking ------ orders ..', tracking_orders)
+        for date in tri_date:
+            """Ventes +"""
+            for so in find_sale_order_id:
+                tracking_orders = tracking.search(
+                    [('partner', '=', partner_id), ('date', '=', date), ('purchase_ref', '=', str(so.id) + 'VEN')])
+                print('Tracking ------ Orders ..', tracking_orders)
+                if tracking_orders:
+                    if tracking_orders.purchase_ref not in tbl:
+                        all_vals.update({
+                            'name': tracking_orders.reference,
+                            'partner_id': tracking_orders.partner.name,
+                            # 'user_id': tracking_orders.user_id.name,
+                            'amount_total': tracking_orders.amount_currency,
+                            'debit': tracking_orders.amount_currency,
+                            'credit': 0,
+                            'libele': ' ',
+                            'somme_paye': 0,
+                            'solde': amount + tracking_orders.amount_currency,
+                            'designation': 'BL-' + str(tracking_orders.reference),
+                            'libele_op': tracking_orders.libele_op or ' ',
+                            'create_date': tracking_orders.date.strftime('%d-%m-%Y'),
+                        })
+                        tbl.append(tracking_orders.purchase_ref)
+                        all_data.append(all_vals)
+                        print()
+                        print('All Data #1', all_data)
+                        print()
+                        amount += tracking_orders.amount_currency
+                        all_vals = {}
+
+            """Achats +"""
+            for po in find_purchase_order_id:
+                tracking_purchases = tracking.search(
+                    [('partner', '=', partner_id), ('date', '=', date), ('purchase_ref', '=', str(po.id) + 'ACH')])
+                print('Tracking ------ Purchases ..', tracking_purchases)
+                if tracking_purchases:
+                    if tracking_purchases.purchase_ref not in tbl:
+                        all_vals.update({
+                            'name': tracking_purchases.reference,
+                            'partner_id': tracking_purchases.partner.name,
+                            # 'user_id': tracking_orders.user_id.name,
+                            'amount_total': tracking_purchases.amount_currency,
+                            'debit': 0,
+                            'credit': tracking_purchases.amount_currency,
+                            'libele': tracking_purchases.libele_op or ' ',
+                            'somme_paye': 0,
+                            'solde': amount + tracking_purchases.amount_currency,
+                            'designation': 'BL-' + str(tracking_purchases.reference),
+                            'libele_op': ' ',
+                            'create_date': tracking_purchases.date.strftime('%d-%m-%Y'),
+                        })
+                        tbl.append(tracking_purchases.purchase_ref)
+                        all_data.append(all_vals)
+                        print()
+                        print('All Data #2', all_data)
+                        print()
+                        amount += tracking_purchases.amount_currency
+                        all_vals = {}
+
+            """Factures +"""
+            for am in find_account_move_id:
+                tracking_factures = tracking.search(
+                    [('partner', '=', partner_id), ('date', '=', date), ('move_id', '=', am.id),
+                     ('partner_type', '=', 'customer')])
+                print('Tracking ------ Factures ..', tracking_factures)
+                if tracking_factures:
+                    if tracking_factures.reference not in tbl:
+                        all_vals.update({
+                            'name': tracking_factures.reference,
+                            'partner_id': tracking_factures.partner.name,
+                            # 'user_id': tracking_orders.user_id.name,
+                            'amount_total': tracking_factures.amount_currency,
+                            'debit': tracking_factures.amount_currency,
+                            'credit': 0,
+                            'libele': tracking_factures.libele_op or ' ',
+                            'somme_paye': 0,
+                            'solde': amount + tracking_factures.amount_currency,
+                            'designation': str(tracking_factures.reference),
+                            'libele_op': ' ',
+                            'create_date': tracking_factures.date.strftime('%d-%m-%Y'),
+                        })
+                        tbl.append(tracking_factures.reference)
+                        all_data.append(all_vals)
+                        print()
+                        print('All Data #3', all_data)
+                        print()
+                        amount += tracking_factures.amount_currency
+                        all_vals = {}
+
+            """Paiements -"""
+            for ap in find_account_payment_id:
+                print('TTTTTTT')
+                tracking_payments = tracking.search(
+                    [('partner', '=', partner_id), ('date', '=', date), ('payment_id', '=', ap.id),
+                     ('partner_type', '=', 'customer')])
+                print('Tracking ------ Payments ..', tracking_payments)
+                if tracking_payments:
+                    if tracking_payments.purchase_ref not in tbl:
+                        all_vals.update({
+                            'name': tracking_payments.reference,
+                            'partner_id': tracking_payments.partner.name,
+                            # 'user_id': tracking_orders.user_id.name,
+                            'amount_total': tracking_payments.amount_currency,
+                            'debit': 0,
+                            'credit': tracking_payments.amount_currency,
+                            'libele': tracking_payments.libele_op or ' ',
+                            'somme_paye': 0,
+                            'solde': amount + tracking_payments.amount_currency,
+                            'designation': str(tracking_payments.reference),
+                            'libele_op': ' ',
+                            'create_date': tracking_payments.date.strftime('%d-%m-%Y'),
+                        })
+                        tbl.append(tracking_payments.purchase_ref)
+                        all_data.append(all_vals)
+                        print()
+                        print('All Data #4', all_data)
+                        print()
+                        amount += tracking_payments.amount_currency
+                        all_vals = {}
+
+            """Encaissements -"""
+            for se in find_secii_encaissement_id:
+                print('TTTTTTT----AAAAAA')
+                tracking_encaissements = tracking.search(
+                    [('partner', '=', partner_id), ('date', '=', date), ('purchase_ref', '=', str(se.id) + 'ENC'),
+                     ('partner_type', '=', 'customer')])
+                print('Tracking ------ Encaissements ..', tracking_encaissements)
+                if tracking_encaissements:
+                    if tracking_encaissements.purchase_ref not in tbl:
+                        all_vals.update({
+                            'name': tracking_encaissements.reference,
+                            'partner_id': tracking_encaissements.partner.name,
+                            # 'user_id': tracking_orders.user_id.name,
+                            'amount_total': tracking_encaissements.amount_currency,
+                            'debit': 0,
+                            'credit': tracking_encaissements.amount_currency,
+                            'libele': tracking_encaissements.libele_op or ' ',
+                            'somme_paye': 0,
+                            'solde': amount + tracking_encaissements.amount_currency,
+                            'designation': 'ENC-' + str(tracking_encaissements.reference),
+                            'libele_op': ' ',
+                            'create_date': tracking_encaissements.date.strftime('%d-%m-%Y'),
+                        })
+                        tbl.append(tracking_encaissements.purchase_ref)
+                        all_data.append(all_vals)
+                        print()
+                        print('All Data #5', all_data)
+                        print()
+                        amount += tracking_encaissements.amount_currency
+                        all_vals = {}
+
+        # all_date = tracking_orders.mapped('create_date') + all_paie.mapped("create_date") + all_return.mapped("write_date")
+        # a = sorted(all_date)
+        # print('A #1', a, 'Taille #1', len(tracking_orders), 'Taille #2', len(all_paie), 'Taille #3', len(all_return), )
+        # amount = (past_purchase - past_payment - past_retour)
+
+        #     total_final = total_vente + total_ant - total_somme - total_retour
+        print('all_vals =>', all_vals)
+        print('Tbl ===>', tbl)
+        print('all_data ', all_data)
+        tracking_partner = self.env['tracking.partner'].search([('id', '=', data.get('id'))])
+        """-----------------------------------------------"""
+        sheet = workbook.add_worksheet("Bilan du Client " + name)
+        sheet.set_row(10, 20)
+        sheet.set_column('C:E', 16)
+        sheet.set_column('G:J', 16)
+        sheet.set_column('B:B', 18)
+        sheet.set_column('F:F', 18)
+        """/------------ Mise en forme ------------/"""
+        bold = workbook.add_format({'bold': True, 'valign': 'vcenter', 'align': 'center'})
+        bo_c = workbook.add_format({'bold': True, 'left': 2, 'valign': 'vcenter', 'align': 'center'})
+        merge_format = workbook.add_format({
+            'bold': True,
+            'border': 6,
+            'align': 'center',
+            'valign': 'vcenter',
+            'fg_color': '#EC634D',
+            'font_size': 14,
+        })
+
+        merge = workbook.add_format({'valign': 'vcenter', 'align': 'center', 'bold': True})
+
+        center = workbook.add_format({'align': 'center',
+                                      'border': 2,
+                                      'left': 2,
+                                      'valign': 'vcenter'})
+
+        date = workbook.add_format()
+        date.set_num_format({'dd/mm/yyyy'})
+
+        currency_format = workbook.add_format({'num_format': '# ##0 ##0',
+                                               'border': 2,
+                                               'valign': 'vcenter',
+                                               'align': 'center'})
+        cur_format = workbook.add_format({'num_format': '# ##0 ##0',
+                                          'valign': 'vcenter',
+                                          'align': 'center',
+                                          'bold': True})
+
+        currency_format2 = workbook.add_format({'num_format': '# ##0 ##0',
+                                                'fg_color': '#A29F9E',
+                                                'valign': 'vcenter',
+                                                'align': 'center',
+                                                'bold': True})
+
+        index_header = 2
+        index_data = 12
+
+        sheet.write('C2:D2', 'RELEVE DE COMPTE DU ' + str(start_date) + ' AU ' + str(end_date), merge)
+        sheet.set_row(1, 20)
+        # sheet.write(1, 2, str(start_date), date)
+        # sheet.write(1, 3, 'au', bold)
+        # sheet.write(1, 4, str(end_date), date)
+        sheet.write('F4:G4', 'TOTAL SOLDE ANTERIEUR :', merge)
+        sheet.set_row(5, 20)
+        sheet.write(3, 7, past_amount_currency, cur_format)
+        sheet.set_row(3, 20)
+        sheet.write(6, 1, name, bold)
+        sheet.set_row(6, 20)
+        sheet.write(8, 1, 'ADRESSE : ' + str(street), bold)
+        sheet.set_row(8, 20)
+        table_header = ["Date", "N° Commande", "Désignation", "Libellé", "N° de Bon", "Débit", "Crédit", "Montant"]
+        for i in table_header:
+            sheet.write(10, index_header, i, merge_format)
+            index_header += 1
+        sheet.write(11, 2, '   ', bo_c)
+        sheet.write(11, 3, '   ', bo_c)
+        sheet.write(11, 4, 'ANCIEN SOLDE', bo_c)
+        sheet.write(11, 5, '   ', bo_c)
+        sheet.write(11, 6, '   ', bo_c)
+        sheet.write(11, 7, '   ', bo_c)
+        sheet.write(11, 8, '   ', bo_c)
+        sheet.write(11, 9, '   ', bo_c)
+        sheet.set_row(11, 20)
+        sheet.write(11, 7, past_amount_currency, currency_format)
+        sheet.write(11, 9, past_amount_currency, currency_format)
+
+        for elt in all_data:
+            # print('data =', elt)
+            # print(len(elt))
+            # for x in elt:
+            #     print('X =', x)
+            sheet.write(index_data, 2, elt['create_date'], center)
+            sheet.write(index_data, 3, elt['name'], center)
+            sheet.write(index_data, 4, elt['designation'], center)
+            sheet.write(index_data, 5, elt['libele'], center)
+            sheet.write(index_data, 6, elt['libele_op'], center)
+            sheet.write(index_data, 7, elt['debit'], currency_format)
+            sheet.write(index_data, 8, elt['credit'], currency_format)
+            sheet.write(index_data, 9, elt['solde'], currency_format)
+            sheet.write(index_data + 1, 7, (past_amount_currency), currency_format)
+            # sheet.write(index_data + 1, 8, (total_somme + total_retour), currency_format)
+            sheet.set_row(index_data, 20)
+            sheet.set_row(index_data + 1, 20)
+            print('Dernier index', index_data)
+            index_data += 1
+            sheet.write(index_data + 4, 5, 'SAUF ERREUR OU OMISSION, VOTRE SOLDE EST DE: ', bold)
+            sheet.write(index_data + 4, 8, total_amount_currency, currency_format2)
+            sheet.write(index_data + 3, 3, '   ')
+            sheet.write(index_data + 3, 4, '   ')
+            sheet.write(index_data + 3, 5, '   ')
+            sheet.write(index_data + 3, 6, '   ')
+            sheet.write(index_data + 3, 7, '   ')
+            sheet.write(index_data + 3, 8, '   ')
+            sheet.set_row(index_data + 4, 20)
