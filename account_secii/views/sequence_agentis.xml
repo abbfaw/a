@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+        <record id="view_comptable_seq" model="ir.sequence">
+            <field name="name">Account Secii Sequence</field>
+            <field name="code">account.secii</field>
+            <field name="prefix">CAI</field>
+            <field name="padding">7</field>
+        </record>
+    </data>
+</odoo>
