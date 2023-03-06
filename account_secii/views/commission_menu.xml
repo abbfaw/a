@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <data>
+
+        <!-- Vue Liste pour commission-->
+        <record id="encaissement_commisson_list" model="ir.ui.view">
+            <field name="name">secii.commission.list</field>
+            <field name="model">secii.commission</field>
+            <field name="arch" type="xml">
+                <tree string="Commission" export_xlsx="0">
+                    <header>
+                        <button name="action_paye" type="object" string="Payer Commission"
+                                class="oe_highlight"/>
+                    </header>
+                    <field name="commercial" width="1"/>
+                    <field name="start_date" width="1"/>
+                    <field name="end_date" width="1"/>
+                    <field name="montant_encaisse" width="1"/>
+                    <field name="taux" width="1"/>
+                    <!--                    <field name="taux_commission" width="1"/>-->
+                    <field name="montant_commission" width="1" sum="Total des commissions" widget='monetary'
+                           options="{'currency_field': 'currency_id'}" decoration-bf="True"/>
+                    <field name="status" widget="badge" string="Statut" decoration-info="status == 'impaye'"
+                           decoration-success="status == 'paye'"/>
+                    <!--                    <button type="object" icon="fa-trash" name="unlink"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue Form pour commission-->
+        <record id="encaissement_commission_form" model="ir.ui.view">
+            <field name="name">secii.commission.form</field>
+            <field name="model">secii.commission</field>
+            <field name="arch" type="xml">
+                <form string="Commission">
+                    <header style="margin-top:25px;">
+                        <field name="status" widget="statusbar"/>
+                        <button name="action_impaye" type="object" string="Remettre en Impayé"
+                                class="oe_highlight" attrs="{'invisible': [('status', '=', 'impaye')]}"/>
+                        <button name="action_paye" type="object" string="Payer la commission"
+                                class="oe_highlight"
+                                attrs="{'invisible': ['|',('status', '=', 'paye'),('is_paye', '=', True)]}"/>
+                        <button name="action_paye" type="object" string="Payer la commission"
+                                confirm="Cette commission a déjà été calculée. Voulez vous continuer !?"
+                                class="oe_highlight"
+                                attrs="{'invisible': ['|',('is_paye', '=', False),('status', '=', 'paye')]}"/>
+
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box"
+                             groups="account_secii.secii_users,account_secii.secii_box_see_all">
+                            <button class="oe_stat_button" type="object"
+                                    name="open_caisse" icon="fa-pencil-square-o">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_text">Caisse</span>
+                                </div>
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="commercial" width="1" attrs="{'readonly':[('status','=',('paye'))]}"/>
+                                <field name="start_date" width="1" attrs="{'readonly':[('status','=',('paye'))]}"/>
+                                <field name="end_date" width="1" attrs="{'readonly':[('status','=',('paye'))]}"/>
+                            </group>
+                            <group>
+                                <field name="is_paye" invisible="1"/>
+                                <field name="montant_encaisse" width="1"/>
+                                <field name="taux" width="1" readonly="1"
+                                       attrs="{'readonly':[('status','=',('paye'))]}"/>
+                                <!--                    <field name="taux_commission" width="1"/>-->
+                                <field name="montant_commission" width="1"/>
+<!--                                <field name="inst" string="En instance"/>-->
+                                <!--                    <button type="object" icon="fa-trash" name="unlink"/>-->
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vue Inherit Form taux de commission -->
+        <record id="view_employee_form_inherit" model="ir.ui.view">
+            <field name="name">hr.employee.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='coach_id']" position="after">
+                    <field name="taux_commission" widget="float"/>
+                </xpath>
+<!--                <xpath expr="//field[@name='taux_commission']" position="after">-->
+<!--                    <field name="societe" domain="[('is_company', '=', True)]"/>-->
+<!--                </xpath>-->
+            </field>
+        </record>
+
+        <!-- action pour ouvrir la vue liste commission -->
+        <record id="encaissement_commisson_action" model="ir.actions.act_window">
+            <field name="name">Commissions</field>
+            <field name="res_model">secii.commission</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="encaissement_commisson_list"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Créer une nouvelle commission
+                </p>
+                <p>
+                    Vous pouvez créer une nouvelle commission.
+                </p>
+            </field>
+        </record>
+
+        <!--Action server permettant de définir un domaine pour la commission du commercial-->
+        <record id="action_server_commission_view" model="ir.actions.server">
+            <field name="name">Ma commission</field>
+            <field name="model_id" ref="account_secii.model_secii_commission"/>
+            <field name="state">code</field>
+            <field name="code">action = env['secii.commission']._commission_filter()</field>
+        </record>
+
+        <!--masque la vue du champs commission pour tous les commerciaux-->
+        <menuitem name="Commissions"
+                  id="commission_commerciaux_secii"
+                  parent="menu_encaissement_commerciaux_secii"
+                  sequence="2"
+                  action="encaissement_commisson_action"
+                  groups="account_secii.secii_users,account_secii.secii_box_see_all"
+        />
+
+        <!--Menu Ma commission visible uniquement par les commerciaux-->
+        <menuitem name="Ma commission"
+                  id="commission_commercial_secii"
+                  parent="menu_encaissement_commerciaux_secii"
+                  sequence="4"
+                  action="action_server_commission_view"
+                  groups="account_secii.secii_box_see_all"
+        />
+
+    </data>
+</odoo>
