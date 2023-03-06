@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inherit_purchase_order_form" model="ir.ui.view">
+        <field name="name">inherited.purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <header>
+<!--                <button name="action_generate_official_purchase" string="Générer achat additionnel"-->
+<!--                        type="object" class="btn-primary" attrs="{'invisible': ['|',('add_price', '=', False), ('statut','=','1_generate')]}"/>-->
+<!--                <button name="action_generate_official_purchase" string="Générer achat additionnel"-->
+<!--                        type="object" class="btn-primary" confirm="Vous avez déjà généré un achat. voulez-vous continuez ?"-->
+<!--                        attrs="{'invisible': ['|',('add_price', '=', False), ('statut','!=','1_generate')]}"/>-->
+                <button name="create_payment_instance" string="Faire un paiement"
+                        type="object" class="btn-primary"
+                        attrs="{'invisible': [('statut','not in',('1_generate','0_confirm'))]}"/>
+                <button name="update_private_record" string="Mettre a jour"
+                        type="object" class="btn-primary"
+                        attrs="{'invisible': [('statut','!=','1_generate')]}"/>
+            </header>
+            <field name="currency_id" position="after">
+                <field name="edit_rate" force_save="1" attrs="{'invisible':[('company_curreny_bool','=',True)]}"/>
+                <field name="create_invoice" invisible="1"/>
+                <field name="from_instance_purchase" invisible="1"/>
+                <field name="company_curreny_bool" invisible="1"/>
+                <field name="official_quotation_exist" invisible="1"/>
+                <field name="statut" invisible="1"/>
+                <field name="nature_operation" invisible="1"/>
+                <field name="ref_import" invisible="1"/>
+<!--                <field name="add_price" attrs="{'invisible': [('is_prive', '=', False)], 'readonly': [('state','in',('done','purchase'))]}"-->
+<!--                       groups="account_secii.secii_box_see_all"-->
+<!--                />-->
+            </field>
+            <xpath expr="//form/sheet/div[@name='button_box']/button[@name='action_view_invoice']" position="before">
+                <button class="oe_stat_button" type="object"
+                        name="open_official_quotation" icon="fa-credit-card"
+                        attrs="{'invisible': [('official_quotation_exist', '=', False)]}">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Achat additionnel</span>
+                    </div>
+                </button>
+            </xpath>
+<!--            <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_unit']" position="after">-->
+<!--                <field name="officiel_price" attrs="{'column_invisible': [('parent.add_price', '=', False)]}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//button[@name='button_confirm'][2]" position="attributes">-->
+<!--                <attribute name="confirm">Assurez-vous que le taux de conversion est correct avant la validation de votre commande</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//button[@name='button_confirm'][1]" position="attributes">-->
+<!--                <attribute name="confirm">Assurez-vous que le taux de conversion est correct avant la validation de votre commande</attribute>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">-->
+<!--                <field name="subtotal_oficiel" readonly="1" force_save="1" attrs="{'column_invisible': [('parent.add_price', '=', False)]}"/>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+
+    <!-- action demande de prix - non en instance -->
+<!--    <record id="inherit_action_purchase" model="ir.actions.act_window">-->
+<!--        <field name="name">Demandes de prix</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">purchase.order</field>-->
+<!--        <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>-->
+<!--        <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>-->
+<!--        <field name="domain">[('is_prive','=',False)]</field>-->
+<!--        <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>-->
+<!--        <field name="context">{'quotation_only': True}</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Aucune demande de devis trouvée. Créons-en un !-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Les demandes de devis sont des documents qui seront envoyés à vos fournisseurs pour demander les prix-->
+<!--                des différents produits que vous envisagez d'acheter.-->
+<!--                Une fois qu'un accord a été trouvé avec le fournisseur, ils seront confirmés et transformés en bons de-->
+<!--                commande.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; action demande de prix - en instance &ndash;&gt;-->
+<!--    <record id="inherit_action_purchase_private" model="ir.actions.act_window">-->
+<!--        <field name="name">Demandes de prix</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">purchase.order</field>-->
+<!--        <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>-->
+<!--        <field name="view_id" ref="purchase.purchase_order_kpis_tree"/>-->
+<!--        <field name="domain">[]</field>-->
+<!--        <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>-->
+<!--        <field name="context">{'quotation_only': True}</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Aucune demande de devis trouvée. Créons-en un !-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Les demandes de devis sont des documents qui seront envoyés à vos fournisseurs pour demander des prix-->
+<!--                pour différents-->
+<!--                produits que vous envisagez d'acheter.-->
+<!--                Une fois qu'un accord a été trouvé avec le fournisseur, il sera confirmé et transformé en achat-->
+<!--                ordres.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; action bon commande - non en instance &ndash;&gt;-->
+<!--    <record id="inherit_purchase_order" model="ir.actions.act_window">-->
+<!--        <field name="name">Bons de commande</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">purchase.order</field>-->
+<!--        <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>-->
+<!--        <field name="view_id" ref="purchase.purchase_order_view_tree"/>-->
+<!--        <field name="domain">[('state','in',('purchase', 'done')), ('is_prive','=',False)]</field>-->
+<!--        <field name="search_view_id" ref="purchase.purchase_order_view_search"/>-->
+<!--        <field name="context">{}</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Aucun bon de commande trouvé. Créons-en un !-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Une fois que vous avez commandé vos produits à votre fournisseur, confirmez votre demande de devis et il-->
+<!--                se transformera-->
+<!--                dans un bon de commande.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; action bon commande - en instance &ndash;&gt;-->
+<!--    <record id="inherit_purchase_order_private" model="ir.actions.act_window">-->
+<!--        <field name="name">Bons de commande</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">purchase.order</field>-->
+<!--        <field name="view_mode">tree,kanban,form,pivot,graph,calendar,activity</field>-->
+<!--        <field name="view_id" ref="purchase.purchase_order_view_tree"/>-->
+<!--        <field name="domain">[('state','in',('purchase', 'done'))]</field>-->
+<!--        <field name="search_view_id" ref="purchase.purchase_order_view_search"/>-->
+<!--        <field name="context">{}</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Aucun bon de commande trouvé. Créons-en un !-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Une fois que vous avez commandé vos produits à votre fournisseur, confirmez votre demande de devis et il-->
+<!--                se transformera-->
+<!--                dans un bon de commande.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; menu demande de prix - non en instance &ndash;&gt;-->
+<!--    <menuitem name="Demande de prix"-->
+<!--              id="inherit_action_purchase_menu"-->
+<!--              parent="purchase.menu_procurement_management"-->
+<!--              action="inherit_action_purchase"-->
+<!--              sequence="-2"-->
+<!--              groups="sale_purchase_private.security_not_sale_purchase_private"-->
+
+<!--    />-->
+
+<!--    &lt;!&ndash; menu demande de prix - en instance &ndash;&gt;-->
+<!--    <menuitem name="Demande de prix"-->
+<!--              id="inherit_action_purchase_private_menu"-->
+<!--              parent="purchase.menu_procurement_management"-->
+<!--              action="inherit_action_purchase_private"-->
+<!--              sequence="-2"-->
+<!--              groups="account_secii.secii_box_see_all"-->
+<!--    />-->
+
+<!--    &lt;!&ndash; menu bon de commande - non en instance &ndash;&gt;-->
+<!--    <menuitem name="Bons de commande"-->
+<!--              id="inherit_purchase_order_menu"-->
+<!--              parent="purchase.menu_procurement_management"-->
+<!--              action="inherit_purchase_order"-->
+<!--              sequence="-2"-->
+<!--              groups="sale_purchase_private.security_not_sale_purchase_private"-->
+<!--    />-->
+
+<!--    &lt;!&ndash; menu bon de commande - en instance &ndash;&gt;-->
+<!--    <menuitem name="Bons de commande"-->
+<!--              id="inherit_purchase_order_private_menu"-->
+<!--              parent="purchase.menu_procurement_management"-->
+<!--              action="inherit_purchase_order_private"-->
+<!--              sequence="-2"-->
+<!--              groups="account_secii.secii_box_see_all"-->
+<!--    />-->
+
+<!--    <menuitem id="purchase.menu_purchase_rfq" active="False"/>-->
+<!--    <menuitem id="purchase.menu_purchase_form_action" active="False"/>-->
+
+<!--    <record id="purchase.purchase_report_main" model="ir.ui.menu">-->
+<!--        <field name="groups_id" eval="[(4,ref('sale_purchase_private.security_sale_purchase_private'))]"/>-->
+<!--    </record>-->
+</odoo>

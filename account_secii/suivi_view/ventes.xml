@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="inherit_sale_order_form" model="ir.ui.view">
+        <field name="name">inherited.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_shipping_id" position="after">
+                <field name="create_invoice" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- action devis - non en instance -->
+<!--    <record id="inherit_action_sale" model="ir.actions.act_window">-->
+<!--        <field name="name">Devis</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">sale.order</field>-->
+<!--        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>-->
+<!--        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>-->
+<!--        <field name="search_view_id" ref="sale.view_quotation_tree_with_onboarding"/>-->
+<!--        <field name="context">{'search_default_my_quotation': 1}</field>-->
+<!--        <field name="domain">[('is_prive','=',False)]</field>-->
+<!--    </record>-->
+
+    <!-- action devis - en instance -->
+<!--    <record id="inherit_action_sale_private" model="ir.actions.act_window">-->
+<!--        <field name="name">Devis</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">sale.order</field>-->
+<!--        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>-->
+<!--        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>-->
+<!--        <field name="search_view_id" ref="sale.view_quotation_tree_with_onboarding"/>-->
+<!--        <field name="context">{'search_default_my_quotation': 1}</field>-->
+<!--    </record>-->
+
+    <!-- action bon commande - non en instance -->
+<!--    <record id="inherit_sale_order" model="ir.actions.act_window">-->
+<!--        <field name="name">Commandes</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">sale.order</field>-->
+<!--        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>-->
+<!--        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>-->
+<!--        <field name="context">{}</field>-->
+<!--        <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel')),('is_prive','=',False)]</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Create a new quotation, the first step of a new sale!-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Once the quotation is confirmed, it becomes a sales order.-->
+<!--                <br/>-->
+<!--                You will be able to create an invoice and collect the payment.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- action bon commande - en instance -->
+<!--    <record id="inherit_sale_order_private" model="ir.actions.act_window">-->
+<!--        <field name="name">Commandes</field>-->
+<!--        <field name="type">ir.actions.act_window</field>-->
+<!--        <field name="res_model">sale.order</field>-->
+<!--        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>-->
+<!--        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>-->
+<!--        <field name="context">{}</field>-->
+<!--        <field name="domain">[('state', 'not in', ('draft', 'sent', 'cancel'))]</field>-->
+<!--        <field name="help" type="html">-->
+<!--            <p class="o_view_nocontent_smiling_face">-->
+<!--                Create a new quotation, the first step of a new sale!-->
+<!--            </p>-->
+<!--            <p>-->
+<!--                Once the quotation is confirmed, it becomes a sales order.-->
+<!--                <br/>-->
+<!--                You will be able to create an invoice and collect the payment.-->
+<!--            </p>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- menu devis - non en instance -->
+<!--    <menuitem name="Devis"-->
+<!--              id="inherit_action_sale_menu"-->
+<!--              parent="sale.sale_order_menu"-->
+<!--              action="inherit_action_sale"-->
+<!--              sequence="-2"-->
+<!--    />-->
+
+    <!-- menu devis - en instance -->
+<!--    <menuitem name="Devis"-->
+<!--              id="inherit_action_sale_private_menu"-->
+<!--              parent="sale.sale_order_menu"-->
+<!--              action="inherit_action_sale_private"-->
+<!--              sequence="-2"-->
+<!--    />-->
+
+    <!-- menu bon de commande - non en instance -->
+<!--    <menuitem name="Commandes"-->
+<!--              id="inherit_sale_order_menu"-->
+<!--              parent="sale.sale_order_menu"-->
+<!--              action="inherit_sale_order"-->
+<!--              sequence="-1"-->
+<!--    />-->
+
+    <!-- menu bon de commande - en instance -->
+<!--    <menuitem name="Commandes"-->
+<!--              id="inherit_sale_order_private_menu"-->
+<!--              parent="sale.sale_order_menu"-->
+<!--              action="inherit_sale_order_private"-->
+<!--              sequence="-1"-->
+<!--    />-->
+
+<!--    <menuitem id="sale.menu_sale_quotations" active="False"/>-->
+<!--    <menuitem id="sale.menu_sale_order" active="False"/>-->
+
+</odoo>
