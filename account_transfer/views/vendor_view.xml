@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_vendor_tree" model="ir.ui.view">
+        <field name="name">vendor.form.tree</field>
+        <field name="model">vendor.form</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reference"/>
+                <field name="vendor"/>
+                <field name="currency"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirm'"
+                       decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vendor_mouv_list" model="ir.ui.view">
+        <field name="name">vendor.mouv.list</field>
+        <field name="model">vendor.mouv</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date" width="1"/>
+                <field name="client" width="1"/>
+                <field name="purchased_rate" width="1"/>
+                <field name="sold_rate" width="1"/>
+                <field name="gain" width="1"/>
+                <field name="amount" width="1" sum="Total of Amount"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_vendor_form" model="ir.ui.view">
+        <field name="name">vendor.form</field>
+        <field name="model">vendor.form</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" nolabel="1"/>
+                    <button name="go_validate" string="Valider" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="back_draft" string="Remettre en brouillon" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Informations générale">
+                            <field name="vendor" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="currency" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <notebook>
+                            <page name="Mouvements">
+                                <field name="get_moves" create="false" readonly="true"/>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_vendor_list" model="ir.actions.act_window">
+        <field name="name">Listes des fournisseurs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">vendor.form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez des fournisseurs!
+            </p>
+            <p>
+                Votre liste est vide.
+                <br/>
+                Commencez par créer des fournisseurs.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_vendor_list"
+              name="Taux Fournisseurs"
+              action="action_vendor_list"
+              parent="account_transfer.menu_operations_list"
+              sequence="7"/>
+</odoo>

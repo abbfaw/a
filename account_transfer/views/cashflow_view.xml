@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_cashflow_tree" model="ir.ui.view">
+        <field name="name">cash.flow.tree</field>
+        <field name="model">cash.flow</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reference"/>
+                <field name="date"/>
+                <field name="description"/>
+                <field name="operation_type"/>
+                <field name="tree_amount" sum="Total of Amount"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirm'"
+                       decoration-info="state == 'draft'"
+                       width="2"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_cashflow_form" model="ir.ui.view">
+        <field name="name">cash.flow</field>
+        <field name="model">cash.flow</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" nolabel="1"/>
+                    <button name="go_validate" string="Valider" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '=', 'confirm')]}"/>
+                    <button name="back_draft" string="Remettre en brouillon" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name='reference' readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Informations générale">
+                            <field name="date" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+                            <field name="operation_type" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+                            <field name="description" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+                        </group>
+                        <group string="">
+                            <field name="amount" attrs="{'readonly': [('state', '=', 'confirm')]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cashflow_view" model="ir.actions.act_window">
+        <field name="name">Caisse</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cash.flow</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Ajoutez des opérations!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_results_root"
+              name="Bilans"
+              parent="account_transfer.menu_transfer_list_root"
+              sequence="8"/>
+
+    <menuitem id="menu_cash_flow"
+              name="Caisse"
+              action="action_cashflow_view"
+              parent="account_transfer.menu_results_root"
+              sequence="8"/>
+</odoo>

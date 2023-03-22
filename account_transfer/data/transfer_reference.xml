@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <data>
+        <record id="reference_sequence" model="ir.sequence">
+            <field name="name">Reference d'operation</field>
+            <field name="code">transfer.form</field>
+            <field name="prefix">OP</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+    <data>
+        <record id="reference_sequence_payment" model="ir.sequence">
+            <field name="name">Reference Sequence Fournisseurs</field>
+            <field name="code">vendor.form</field>
+            <field name="prefix">EXCH</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+    <data>
+        <record id="reference_sequence_cashflow" model="ir.sequence">
+            <field name="name">Reference Sequence Caisse</field>
+            <field name="code">cash.flow</field>
+            <field name="prefix">FLOW</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+        <data>
+        <record id="reference_sequence_vendor_payment" model="ir.sequence">
+            <field name="name">Reference Paiement Fournisseurs</field>
+            <field name="code">vendor.payment</field>
+            <field name="prefix">PAI</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+        <data>
+        <record id="reference_sequence_gainflow" model="ir.sequence">
+            <field name="name">Reference Sequence Bénéfice</field>
+            <field name="code">gain.flow</field>
+            <field name="prefix">GAIN</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+</odoo>
