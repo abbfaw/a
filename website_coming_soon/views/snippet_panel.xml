@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="rt_website_coming_soon_snippets" inherit_id="website.snippets" name="Coming Soon Snippet">
+        <xpath expr="//div[@id='snippet_structure']" position="before">
+            <div id="rt_website_coming_soon_snippets" class="o_panel">
+                <div class="o_panel_header">Coming Soon Snippets</div>
+                <div class="o_panel_body">
+                    <t t-snippet="rt_website_coming_soon.rt_website_coming_soon_tmpl_1" 
+                       t-thumbnail="" />
+                    <t t-snippet="rt_website_coming_soon.rt_website_coming_soon_tmpl_2" 
+                       t-thumbnail="" /> 
+                    <t t-snippet="rt_website_coming_soon.rt_website_coming_soon_tmpl_3" 
+                       t-thumbnail="" />      
+
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>                       
