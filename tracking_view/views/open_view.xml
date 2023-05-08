@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Suivi Clients Consolidés -->
+    <record id="tracking_partner_consolide_list_modded" model="ir.ui.view">
+        <field name="name">tracking.partner.consolide.modded</field>
+        <field name="model">tracking.partner</field>
+        <field name="inherit_id" ref="account_secii.tracking_partner_consolide_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reference']" position="after">
+                <button name="open_model_views" type="object" string="Voir" class="float-right btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
