@@ -1,0 +1,172 @@
+<odoo>
+    <template id="report_productlabel_dymo_Matarshop" inherit_id="product.report_productlabel_dymo">
+        <xpath expr="//t[@t-call='web.html_container']" position="replace">
+            <t t-call="web.html_container">
+                <t t-set="barcode_size" t-value="'width:45.5mm;height:7.5mm'"/>
+                <t t-set="table_style" t-value="'width:100%;height:32mm;'"/>
+                <t t-set="padding_page" t-value="'padding: 2mm'"/>
+                <t t-foreach="quantity.items()" t-as="barcode_and_qty_by_product">
+                    <t t-set="product" t-value="barcode_and_qty_by_product[0]"/>
+                    <t t-foreach="barcode_and_qty_by_product[1]" t-as="barcode_and_qty">
+                        <t t-set="barcode" t-value="barcode_and_qty[0]"/>
+                        <t t-foreach="range(barcode_and_qty[1])" t-as="qty">
+                            <t t-call="product.report_simple_label_dymo"/>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="report_simple_label_dymo_for_Matarshop" inherit_id="product.report_simple_label_dymo">
+        <xpath expr="div[@t-att-style='padding_page']" position="replace">
+            <div class="o_label_sheet o_label_dymo" t-att-style="padding_page">
+                <div class="o_label_full" t-att-style="table_style">
+                    <div class="text-left o_label_small_barcode">
+                        <t t-if="barcode">
+                            <div>
+                                <img src="/product_sequence/static/src/img/logo.jpeg"
+                                     style="heigth: 54px; width: 54px; float: left;"/>
+                                <table style="border-collapse: separate;border-spacing: 0;empty-cells: hide;">
+                                    <tr>
+                                        <th/>
+                                        <th/>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center">
+                                            <span style="font-size: 8px; align-items: center;"
+                                                  t-field="product.ref_fournisseur"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center">
+                                            <t t-if="product.is_product_variant">
+                                                <strong t-field="product.lst_price"
+                                                        t-options="{'widget': 'monetary', 'label_price': True}"
+                                                        style="font-size: 20px"/>
+                                            </t>
+                                            <t t-else="">
+                                                <strong class="" t-field="product.list_price"
+                                                        t-options="{'widget': 'monetary', 'label_price': True}"
+                                                        style="font-size: 20px"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center; font-size: 8.5px; font-weight: bold">
+                                            <span t-field="product.default_code"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!--
+                                <span style="font-size: 8px; align-items: center;" t-field="product.display_name"/><br/>
+                                <t t-if="product.is_product_variant">
+                                    <strong class="" t-field="product.lst_price" t-options="{'widget': 'monetary', 'label_price': True}" style="font-size: 14px"/>
+                                </t>
+                                <t t-else="">
+                                    <strong class="" t-field="product.list_price" t-options="{'widget': 'monetary', 'label_price': True}"/>
+                                </t>
+                                -->
+                            </div>
+                            <!-- `quiet=0` to remove the left and right margins on the barcode -->
+                            <div t-out="barcode" style="padding-left: 10px;"
+                                 t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'Code128', 'img_style': barcode_size}"/>
+                            <div class="o_label_name"
+                                 style="line-height: 130%;height:2.7em;background-color: transparent;margin-top: -10px">
+                                <div style="font-weight: bold;font-size: 15px; text-align: center">
+                                    <span t-out="barcode[0]" style="margin-right: 4px; margin-left: -8px"/>
+                                    <span t-out="barcode[1:5]" style="margin-right: 4px;"/>
+                                    <span t-out="barcode[5:9]" style="margin-right: 4px;"/>
+                                    <span t-out="barcode[9:11]" style="margin-right: 4px;"/>
+                                    <span t-out="barcode[11:13]" style="margin-right: 4px;"/>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="o_label_name"
+                                 style="line-height: 100%;height:2.7em;background-color: transparent;">
+                                <span style="font-size: 10px" t-field="product.display_name"/>
+                            </div>
+                            <div class="o_label_left_column">
+                                <div t-field="product.default_code" style="width: 350px;font-size: 6px"/>
+                            </div>
+                            <div class="text-right" style="padding: 0 4px;">
+                                <t t-if="product.is_product_variant">
+                                    <strong class="o_label_price_small" t-field="product.lst_price"
+                                            t-options="{'widget': 'monetary', 'label_price': True}"
+                                            style="margin-left: 20px"/>
+                                </t>
+                                <t t-else="">
+                                    <strong class="o_label_price_small" t-field="product.list_price"
+                                            t-options="{'widget': 'monetary', 'label_price': True}"/>
+                                </t>
+                                <div class="o_label_extra_data">
+                                    <t t-out="extra_html"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        <!--<xpath expr="//t[@t-if='barcode']" position="replace">
+            <t t-if="barcode">
+            <t t-if="barcode">
+                <div t-out="barcode" style="padding:0" t-options="{'widget': 'barcode', 'quiet': 0, 'symbology': 'Code128', 'img_style': barcode_size}"/>
+                <div class="o_label_name" style="line-height: 130%;height:2.7em;background-color: transparent;">
+                    <div style="font-weight: bold;font-size: 17px;">
+                        <span t-out="barcode[0]" style="margin-right: 4px; margin-left: -8px"/><span t-out="barcode[1:5]" style="margin-right: 4px;"/><span t-out="barcode[5:9]" style="margin-right: 4px;"/><span t-out="barcode[9:11]" style="margin-right: 4px;"/><span t-out="barcode[11:13]" style="margin-right: 4px;"/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//span[@t-out='barcode']" position="replace">
+            <div style="font-weight: bold;font-size: 17px;">
+                <span t-out="barcode[0]" style="margin-right: 4px; margin-left: -8px"/><span t-out="barcode[1:5]" style="margin-right: 4px;"/><span t-out="barcode[5:9]" style="margin-right: 4px;"/><span t-out="barcode[9:11]" style="margin-right: 4px;"/><span t-out="barcode[11:13]" style="margin-right: 4px;"/>
+            </div>
+        </xpath> -->
+    </template>
+
+    <template id="report_simple_label4x12_for_Matarshop" inherit_id="product.report_simple_label4x12">
+        <xpath expr="//t[@t-if='barcode']" position="replace">
+            <div t-out="barcode" style="padding:0"
+                 t-options="{'widget': 'barcode', 'symbology': 'Code128', 'img_style': barcode_size}"/>
+            <div style="font-weight: bold;">
+                <span t-esc="barcode[0]" style="margin-right: 4px; margin-left: -8px"/>
+                <span t-esc="barcode[1:5]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[5:9]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[9:11]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[11:13]" style="margin-right: 4px;"/>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="report_simple_label4x7_for_Matarshop" inherit_id="product.report_simple_label4x7">
+        <xpath expr="//t[@t-if='barcode']" position="replace">
+            <div t-out="barcode" style="padding:0"
+                 t-options="{'widget': 'barcode', 'symbology': 'Code128', 'img_style': barcode_size}"/>
+            <div style="font-weight: bold;">
+                <span t-esc="barcode[0]" style="margin-right: 4px; margin-left: -8px"/>
+                <span t-esc="barcode[1:5]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[5:9]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[9:11]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[11:13]" style="margin-right: 4px;"/>
+            </div>
+        </xpath>
+    </template>
+
+    <template id="report_simple_label2x7_for_Matarshop" inherit_id="product.report_simple_label2x7">
+        <xpath expr="//t[@t-if='barcode']" position="replace">
+            <div t-out="barcode" style="padding:0"
+                 t-options="{'widget': 'barcode', 'symbology': 'Code128', 'img_style': barcode_size}"/>
+            <div style="font-weight: bold;">
+                <span t-esc="barcode[0]" style="margin-right: 4px; margin-left: -8px"/>
+                <span t-esc="barcode[1:5]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[5:9]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[9:11]" style="margin-right: 4px;"/>
+                <span t-esc="barcode[11:13]" style="margin-right: 4px;"/>
+            </div>
+        </xpath>
+    </template>
+
+</odoo>
