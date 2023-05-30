@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <!-- redefinie le bouton de remboursement du pos et lui donne un id pour ensuite utiliser l'id dans le js du pos -->
+    <t t-name="point_of_sale.RefundButton" owl="1">
+        <div id="refund_button" disabled="1" class="control-button">
+            <i class="fa fa-undo" role="img" aria-label="Refund" title="Refund" />
+            Refund
+        </div>
+    </t>
+
+</templates>
