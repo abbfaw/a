@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="pwdstrength">
+        &lt;!DOCTYPE html&gt;
+        <html lang="en">
+            <head>
+                <meta charset="UTF-8"/>
+                <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                <link rel="stylesheet" href="/mediano_website/static/src/css/pwdstyle.css"/>
+                <link rel="stylesheet" href="/mediano_website/static/src/css/pwdstrength.css"/>
+            </head>
+            <body>
+                <!--                    <div class="form-title">Password Strength Checker</div>-->
+                <div class="progres-bar mb-3 col-xl-8">
+                    <div/>
+                    <div/>
+                    <div/>
+                    <div/>
+                </div>
+                <script src="/mediano_website/static/src/js/pwdstrength.js"/>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Intégration de la partie SMS aux configurations -->
+    <record id="res_config_settings_view_form_sms" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.website.sms</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Option d'envoi de sms à l'inscription ou la validation d'un achat -->
+            <xpath expr="//div[@id='website_email_marketing']/div[@id='website_marketing_automation']"
+                   position="after">
+                <div class="col-12 col-lg-6 o_setting_box" id="sms_on_confirmation">
+                    <div class="o_setting_left_pane">
+                        <div class="mt8">
+                            <!--                            <field name="sms_on_confirm" class="o_light_label"/>-->
+                        </div>
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <div class="o_form_label">
+                            Réception de SMS :
+                        </div>
+                        <div class="text-muted">
+                            Permet de recevoir un SMS lors de l'inscription ou de la validation de la commande.
+                        </div>
+                        <div class="content-group">
+
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <div class="col-12">
+                                        <field name="sms_on_register" class="o_light_label"/>
+                                        <span class="o_form_label">A l'inscription</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="content-group">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <field name="sms_on_confirm" class="o_light_label"/>
+                                        <span class="o_form_label">A la validation de la commande</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Option de connexion par E-mail ou N° de téléphone -->
+            <xpath expr="//*[@id='website_info_settings']" position="after">
+                <h2>Connexion</h2>
+                <div class="row mt16 o_settings_container" id="website_email_connexion">
+                    <div class="col-xs-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="email_activate"/>
+                        </div>
+                        <div class="o_setting_right_pane" id="email_activate_right_pane">
+                            <span class="o_form_label">Connexion par E-mail</span>
+                            <div class="text-muted">
+                                Cette option vous permet de vous connecter avec votre adresse E-mail uniquement
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-6 o_setting_box" id="website_number_connexion">
+                        <div class="o_setting_left_pane">
+                            <field name="number_activate"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Connexion par Numéro de Téléphone</span>
+                            <div class="text-muted">
+                                Cette option vous permet de vous connecter avec votre numéro de téléphone uniquement
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout des boutons livré et en cours de livraison -->
+    <record id="custom_inherit_sale_order_tree" model="ir.ui.view">
+        <field name="name">inherited.sale.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <header>
+                    <button name="encours" type="object" string="Remis au livreur" icon="fa-clock-o"/>
+                    <button name="livrer" type="object" string="Livré" icon="fa-truck"/>
+                </header>
+            </field>
+        </field>
+    </record>
+
+    <!-- Ajout des décorations au champ state pour les nouveaux ajoutés -->
+    <record id="custom_view_quotation_tree" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="replace">
+                <field name="state"
+                       decoration-success="state == 'sale' or state == 'done' or state == 'livre'"
+                       decoration-info="state == 'draft' or state == 'sent' or state == 'encours'"
+                       widget="badge" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>

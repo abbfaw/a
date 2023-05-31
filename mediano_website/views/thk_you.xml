@@ -1,0 +1,108 @@
+<odoo>
+    <data>
+        <!-- Modification de la page confirmation de Paiement -->
+        <template id="website_sale.payment_confirmation_status">
+            <div class="oe_website_sale_tx_status mt-3" t-att-data-order-id="order.id"
+                 t-att-data-order-tracking-info="json.dumps(order_tracking_info)">
+                <t t-set="payment_tx_id" t-value="order.get_portal_last_transaction()"/>
+                <div t-attf-class="card #{
+                (payment_tx_id.state == 'pending') or
+                (payment_tx_id.state == 'done' and order.amount_total == payment_tx_id.amount and 'alert-success') or
+                (payment_tx_id.state == 'done' and order.amount_total != payment_tx_id.amount and 'bg-warning') or
+                (payment_tx_id.state == 'authorized' and 'alert-success') or
+                'bg-danger'}">
+                    <div class="card-headerz">
+                        <!--                        <a role="button" groups="base.group_system" class="btn btn-sm btn-link text-white float-end"-->
+                        <!--                           target="_blank" aria-label="Edit" title="Edit"-->
+                        <!--                           t-att-href="'/web#model=%s&amp;id=%s&amp;action=%s&amp;view_type=form' % ('payment.provider', payment_tx_id.provider_id.id, 'payment.action_payment_provider')">-->
+                        <!--                            <i class="fa fa-pencil"></i>-->
+                        <!--                        </a>-->
+                        <t t-if="payment_tx_id.state == 'pending'">
+                            <!-- Layout avec les informations de paiement -->
+                            <div class="d-flex flex-column align-items-center text-center text-sm-start">
+                                <div class="bg-sm-light text-center p-3 rounded-3">
+                                    <img class="img-fluid w-50 w-sm-25" src="https://assets.unlayer.com/projects/149249/1680002453979-Plan%20de%20travail%201@4x.png"/>
+                                </div>
+
+                                <div class="d-flex flex-column justify-content-between py-2 flex-sm-row w-100">
+                                    <!-- Thank You message -->
+                                    <div class="col-sm-8">
+                                        <h1 class="h1 fw-bolder">Merci Pour votre Achat !</h1>
+                                        <h5 class="fw-light">
+                                            Vérifiez les informations relatives à votre commande
+                                            ci-dessous.
+                                        </h5>
+
+                                        <!-- N° de Commande -->
+                                        <div t-if="order.reference" class="d-flex flex-column pt-2">
+                                            <div class="fs-4">
+                                                <b>Commande:</b>
+                                                <span t-esc='order.reference'/>
+                                            </div>
+
+                                            <!-- Bouton du PDF-->
+                                            <div class="fs-4 pt-2">
+                                                <a class="btn btn-secondary o_download_btn"
+                                                   t-att-href="order.get_portal_url(report_type='pdf', download=True)"
+                                                   title="Download">
+                                                    <i class="fa fa-download"/>
+                                                    Télécharger votre facture
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Qr Code -->
+                                    <div class="col-3 rounded-3 d-none d-sm-block text-center">
+                                        <img t-if="qr" class="img-fluid" t-att-src="'data:image/png;base64,%s' % qr"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-elif="payment_tx_id.state == 'done'">
+                            <span t-if='payment_tx_id.provider_id.sudo().done_msg'
+                                  t-out="payment_tx_id.provider_id.sudo().done_msg"/>
+                        </t>
+                        <t t-elif="payment_tx_id.state == 'done' and order.amount_total != payment_tx_id.amount">
+                            <span>Unfortunately your order can not be confirmed as the amount of your payment does not
+                                match the amount of your cart.
+                                Please contact the responsible of the shop for more information.
+                            </span>
+                        </t>
+                        <t t-elif="payment_tx_id.state == 'cancel'">
+                            <t t-out="payment_tx_id.provider_id.sudo().cancel_msg"/>
+                        </t>
+                        <t t-elif="payment_tx_id.state == 'authorized'">
+                            <t t-if="payment_tx_id.provider_id.sudo().auth_msg"
+                               t-out="payment_tx_id.provider_id.sudo().auth_msg"/>
+                            <span t-else="">Your payment has been authorized.</span>
+                        </t>
+                        <t t-else="payment_tx_id.state == 'error'">
+                            <span t-esc="payment_tx_id.state_message"/>
+                        </t>
+                    </div>
+
+                </div>
+            </div>
+        </template>
+
+        <template id="html_thank_you">
+            <html>
+                <head>
+                    <title>Merci pour votre achat</title>
+                </head>
+                <body>
+                    <!--                    <img src="image-de-remerciement.jpg" alt="Remerciement" style="width: 688px; height: 181px;"/>-->
+                    <h1>Merci pour votre achat !</h1>
+                    <p>Votre commande sera traitée dans les plus brefs délais et vous recevrez un e-mail de confirmation
+                        d'expédition.
+                    </p>
+                    <p>Si vous avez des questions ou des commentaires, n'hésitez pas à nous contacter.</p>
+                    <p>Merci encore et à bientôt !</p>
+                </body>
+            </html>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_category_deliveries" model="product.category">
+            <field name="parent_id" ref="product.product_category_all"/>
+            <field name="name">Deliveries</field>
+        </record>
+        <!-- Abobo -->
+        <record id="product_product_delivery_1" model="product.product">
+            <field name="name">abobo</field>
+            <field name="default_code">abobo</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1000.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="abobo" model="delivery.carrier">
+            <field name="name">Abobo</field>
+<!--            <field name="fixed_price">1000.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">10</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_1"/>
+        </record>
+
+        <!-- Adjamé -->
+        <record id="product_product_delivery_2" model="product.product">
+            <field name="name">adjamé</field>
+            <field name="default_code">adjamé</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1100.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="adjamé" model="delivery.carrier">
+            <field name="name">Adjamé</field>
+<!--            <field name="fixed_price">1100.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">11</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_2"/>
+        </record>
+
+        <!-- Anyama -->
+        <record id="product_product_delivery_3" model="product.product">
+            <field name="name">Anyama</field>
+            <field name="default_code">anyama</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1200.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="anyama" model="delivery.carrier">
+            <field name="name">Anyama</field>
+<!--            <field name="fixed_price">1200.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">12</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_3"/>
+        </record>
+
+        <!-- Attécoubé -->
+        <record id="product_product_delivery_4" model="product.product">
+            <field name="name">attécoubé</field>
+            <field name="default_code">attécoubé</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1300.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="attécoubé" model="delivery.carrier">
+            <field name="name">Attécoubé</field>
+<!--            <field name="fixed_price">1300.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">13</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_4"/>
+        </record>
+
+        <!-- Bingerville -->
+        <record id="product_product_delivery_5" model="product.product">
+            <field name="name">bingerville</field>
+            <field name="default_code">bingerville</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1400.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="bingerville" model="delivery.carrier">
+            <field name="name">Bingerville</field>
+<!--            <field name="fixed_price">1400.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">14</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_5"/>
+        </record>
+
+        <!-- Cocody -->
+        <record id="product_product_delivery_6" model="product.product">
+            <field name="name">cocody</field>
+            <field name="default_code">cocody</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1500.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="cocody" model="delivery.carrier">
+            <field name="name">Cocody</field>
+<!--            <field name="fixed_price">1500.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">15</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_6"/>
+        </record>
+
+        <!-- Koumassi -->
+        <record id="product_product_delivery_7" model="product.product">
+            <field name="name">Koumassi</field>
+            <field name="default_code">koumassi</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1600.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="koumassi" model="delivery.carrier">
+            <field name="name">koumassi</field>
+<!--            <field name="fixed_price">1600.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">16</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_7"/>
+        </record>
+
+        <!-- Marcory -->
+        <record id="product_product_delivery_8" model="product.product">
+            <field name="name">marcory</field>
+            <field name="default_code">marcory</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1700.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="marcory" model="delivery.carrier">
+            <field name="name">Marcory</field>
+<!--            <field name="fixed_price">1700.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">17</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_8"/>
+        </record>
+
+        <!-- Plateau -->
+        <record id="product_product_delivery_9" model="product.product">
+            <field name="name">plateau</field>
+            <field name="default_code">plateau</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1800.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="plateau" model="delivery.carrier">
+            <field name="name">Plateau</field>
+<!--            <field name="fixed_price">1800.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">18</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_9"/>
+        </record>
+
+        <!-- Port bouët -->
+        <record id="product_product_delivery_10" model="product.product">
+            <field name="name">port bouët</field>
+            <field name="default_code">port bouët</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">1900.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="port_bouët" model="delivery.carrier">
+            <field name="name">Port bouët</field>
+<!--            <field name="fixed_price">1900.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">19</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_10"/>
+        </record>
+
+        <!-- Treichville -->
+        <record id="product_product_delivery_11" model="product.product">
+            <field name="name">treichville</field>
+            <field name="default_code">treichville</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">2000.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="treichville" model="delivery.carrier">
+            <field name="name">Treichville</field>
+<!--            <field name="fixed_price">2000.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">20</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_11"/>
+        </record>
+
+        <!-- Songon -->
+        <record id="product_product_delivery_12" model="product.product">
+            <field name="name">Songon</field>
+            <field name="default_code">songon</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">2100.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="songon" model="delivery.carrier">
+            <field name="name">Songon</field>
+<!--            <field name="fixed_price">2100.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">21</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_12"/>
+        </record>
+
+        <!-- Yopougon -->
+        <record id="product_product_delivery_13" model="product.product">
+            <field name="name">yopougon</field>
+            <field name="default_code">yopougon</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+<!--            <field name="list_price">2200.0</field>-->
+            <field name="invoice_policy">order</field>
+        </record>
+        <record id="yopougon" model="delivery.carrier">
+            <field name="name">Yopougon</field>
+<!--            <field name="fixed_price">2200.0</field>-->
+            <field name="free_over" eval="False"/>
+            <field name="amount">0</field>
+            <field name="is_published" eval="True"/>
+            <field name="sequence">22</field>
+            <field name="delivery_type">fixed</field>
+            <field name="product_id" ref="mediano_website.product_product_delivery_13"/>
+        </record>
+    </data>
+</odoo>
