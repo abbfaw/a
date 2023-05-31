@@ -1,0 +1,826 @@
+<odoo>
+    <data>
+        <!-- Insertion de Phone Number dans la vue liste des contacts -->
+        <!--        <record id="view_users_state_tree_inherit" model="ir.ui.view">-->
+        <!--            <field name="name">res.users.tree.inherit</field>-->
+        <!--            <field name="model">res.users</field>-->
+        <!--            <field name="inherit_id" ref="base.view_users_tree"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <xpath expr="//field[@name='lang']" position="before">-->
+        <!--                    <field name="phone_num"/>-->
+        <!--                </xpath>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <!-- Insertion de Phone Number dans la vue form des contacts -->
+        <record id="view_users_state_form_inherit" model="ir.ui.view">
+            <field name="name">res.users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/div[hasclass('oe_title')]/h2" position="after">
+                    <label for="phone_num" string="N° de Téléphone"/>
+                    <h2>
+                        <field name="phone_num" placeholder="ex. 0102030405"/>
+                    </h2>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Web Signup -->
+        <template id="auth_signup.signup" name="Sign up login">
+            <t t-call="web.login_layout">
+                <div class="form-modal flex-column">
+                    <div id="div-logo">
+                        <img src="/mediano_website/static/src/img/logo.png" class="logo-mediano"/>
+                    </div>
+                    <div class="text-center mb-4 px-1">
+                        <span class="title">Bienvenue</span>
+                        <p class="mb-0">Inscrivez-vous sur la meilleure plateforme de vente d'équipements médicaux.</p>
+                    </div>
+                    <div id="email-form" class="col-10 col-sm-8 col-md-8 col-lg-8">
+                        <form class="oe_signup_form" role="form" method="post" action="/register"
+                              style="margin-top: 0px;">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <input type="hidden" name="stepone"/>
+
+                            <!-- Section Erreur -->
+                            <p class="alert alert-danger" t-if="error" role="alert">
+                                <t t-esc="error"/>
+                                <br/>
+                            </p>
+
+                            <div class="mb-3 field-login">
+                                <div class="input-group">
+                                    <!--                                <label for="login">Email</label>-->
+                                    <input type="email" pattern="[a-z0-9.]+@[a-z0-9]+\.[a-z]{2,4}$"
+                                           placeholder="Email" name="login"
+                                           t-att-value="login" id="login"
+                                           t-attf-class="form-control #{'form-control-sm' if form_small else ''} border-0"
+                                           required="required" autofocus="autofocus" autocapitalize="off"/>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text h-100 bg-white border-0">
+                                            <span class="fa fa-envelope" style="color:#185fa5;"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 field-name">
+                                <div class="input-group">
+                                    <!--                                <label for="name">Nom Complet</label>-->
+                                    <input type="text" placeholder="e.g. Coulibaly Karim" name="name" id="name"
+                                           t-attf-class="form-control #{'form-control-sm' if form_small else ''} border-0"
+                                           required="required"/>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text h-100 bg-white border-0">
+                                            <span class="fa fa-user" style="color:#185fa5;"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 field-phone">
+                                <div class="input-group">
+                                    <!--                                <label for="phone">N° de Téléphone</label>-->
+                                    <input type="text" placeholder="N° de Téléphone" name="phone"
+                                           onkeypress="return onlyNumberKey(event)" maxlength="10"
+                                           t-att-value="phone" id="phone"
+                                           t-attf-class="form-control #{'form-control-sm' if form_small else ''} border-0"
+                                           required="required" autofocus="autofocus" autocapitalize="off"/>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text h-100 bg-white border-0">
+                                            <span class="fa fa-mobile" style="color:#185fa5;"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 field-password pt-2">
+                                <div class="input-group fieldd">
+                                    <!--                                <label for="password">Mot de passe</label>-->
+                                    <input type="password" placeholder="Mot de passe" name="password" id="password"
+                                           t-attf-class="form-control #{'form-control-sm' if form_small else ''} password secupass border-0"
+                                           required="required" autocomplete="current-password"
+                                           t-att-autofocus="'autofocus' if login else None" maxlength="8"/>
+                                    <div class="show-pass">
+                                        <i class="material-icons">visibility</i>
+                                    </div>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text h-100 bg-white border-0">
+                                            <span class="fa fa-lock" style="color:#185fa5;"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 field-confirm_password pt-2">
+                                <div class="input-group fieldd">
+                                    <!--                                <label for="confirm_password">Confirmer mot de passe</label>-->
+                                    <input type="password" placeholder="Confirmer mot de passe" name="confirm_password"
+                                           id="confirm_password"
+                                           t-attf-class="form-control #{'form-control-sm' if form_small else ''} password-confirm border-0"
+                                           required="required" autocomplete="current-password"
+                                           t-att-autofocus="'autofocus' if login else None" maxlength="8"/>
+                                    <div class="show-pass-confirm">
+                                        <i class="material-icons">visibility</i>
+                                    </div>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text h-100 bg-white border-0">
+                                            <span class="fa fa-lock" style="color:#185fa5;"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="progres-bar-confirm">
+                                    <div/>
+                                    <div/>
+                                    <div/>
+                                    <div/>
+                                </div>
+                                <div class="pourcentage-confirm hidden">
+                                    <div class="digit-confirm">0</div>%
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="redirect" t-att-value="redirect"/>
+                            <input type="hidden" name="token" t-att-value="token"/>
+                            <div class="text-center oe_login_buttons d-grid pt-3">
+                                <button type="submit" class="btn btn-primary btn-block">S'enregistrer</button>
+                                <!--                                <a t-attf-href="/web/login?{{ keep_query() }}" class="btn btn-link btn-sm"-->
+                                <!--                                   role="button">Avez vous déjà un compte ?-->
+                                <!--                                </a>-->
+                                <div class="o_login_auth"/>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center small mt-2">
+                                <a t-if="not token" t-attf-href="/web/login?{{ keep_query() }}">Avez vous déjà un compte
+                                    ?
+                                </a>
+                            </div>
+
+                            <script>
+                                function onlyNumberKey(evt) {
+
+                                // Only ASCII character in that range allowed
+                                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                                if (ASCIICode &gt; 31 &amp;&amp; (ASCIICode&lt;48 || ASCIICode > 57))
+                                return false;
+                                return true;
+                                }
+                            </script>
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Web Login -->
+        <template id="auth_signup.login" inherit_id="web.login" name="Sign up - Reset Password">
+            <xpath expr="//button[@type='submit']" position="after">
+                <!--                <div class="justify-content-between mt-2 d-flex small">-->
+                <!--                    <a t-if="signup_enabled" t-attf-href="/web/signup?{{ keep_query() }}">Don't have an account?</a>-->
+                <!--                    <a t-if="reset_password_enabled" t-attf-href="/web/reset_password?{{ keep_query() }}">Reset-->
+                <!--                        Password-->
+                <!--                    </a>-->
+                <!--                </div>-->
+            </xpath>
+        </template>
+
+        <!-- Web Login -->
+        <template id="web.login" name="Login">
+            <t t-call="web.login_layout">
+                <div class="form-modal flex-column">
+                    <div id="div-logo">
+                        <img src="/mediano_website/static/src/img/logo.png" class="logo-mediano"/>
+                    </div>
+                    <div class="text-center mb-4 px-1">
+                        <!--                        <span class="title fw-bold">Bon retour</span>-->
+                        <span class="title fw-bold">Êtes vous déjà client ?</span>
+                        <p class="Description mb-0 mx-auto">Veuillez entrer vos identifiants pour vous connecter.</p>
+                    </div>
+
+                    <div class="clearfix"/>
+                    <!-- Number Only -->
+                    <t t-if="only_number">
+                        <div id="number-form col-10" class="col-sm-8 col-md-8 col-lg-8">
+                            <form class="oe_login_form mb-1 mt-0" role="form" t-attf-action="/web/login" method="post"
+                                  onsubmit="this.action = '/web/login' + location.hash">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <p class="alert alert-danger" t-if="error" role="alert">
+                                    <t t-esc="error"/>
+                                </p>
+                                <p class="alert alert-success" t-if="message" role="status">
+                                    <t t-esc="message"/>
+                                </p>
+                                <div class="mb-3" t-if="databases and len(databases) &gt; 1">
+                                    <label for="db" class="col-form-label">Database</label>
+                                    <div t-attf-class="input-group {{'input-group-sm' if form_small else ''}}">
+                                        <input type="text" name="db" t-att-value="request.db" id="db"
+                                               t-attf-class="form-control #{'form-control-sm' if form_small else ''}"
+                                               required="required" readonly="readonly"/>
+                                        <a role="button" href="/web/database/selector" class="btn btn-secondary">Select
+                                            <i class="fa fa-database" role="img" aria-label="Database"
+                                               title="Database"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Number Input Only -->
+                                <div class="mb-3 field-login">
+                                    <div class="input-group">
+                                        <input type="text" placeholder="N° de Téléphone" name="phone"
+                                               t-att-value="phone" id="phone" onkeypress="return onlyNumberKey(event)"
+                                               t-attf-class="form-control #{'form-control-sm' if form_small else ''} border-0"
+                                               required="required" autofocus="autofocus" autocapitalize="off"/>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100 bg-white border-0">
+                                                <span class="fa fa-mobile" style="color:#185fa5;"/>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <!--                                <label for="password" class="form-label invisible">Password</label>-->
+                                    <div class="input-group fieldd">
+                                        <input type="password" placeholder="Password" name="password" id="password"
+                                               t-attf-class="form-control #{'form-control-sm' if form_small else ''} password border-0"
+                                               required="required" autocomplete="current-password"
+                                               t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>
+                                        <div class="show-pass">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100 bg-white border-0">
+                                                <span class="fa fa-lock" style="color:#185fa5;"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="progres-bar d-none">
+                                        <div/>
+                                        <div/>
+                                        <div/>
+                                        <div/>
+                                    </div>
+                                    <div class="pourcentage hidden">
+                                        <div class="digit">0</div>%
+                                    </div>
+                                </div>
+                                <div class="justify-content-center mt-2 d-flex">
+                                    <a href="/web/reset_password" class="btn btn-link btn-sm" role="button"
+                                       style="font-size: 1rem">Mot de Passe Oublié ?
+                                    </a>
+                                    <!--                                    <div class="o_login_auth"/>-->
+                                </div>
+
+<!--                                <t t-call="mediano_website.recaptcha"/>-->
+
+                                <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 {{'pt-2' if form_small else 'pt-3'}}">
+                                    <button type="submit" class="btn btn-primary">Connexion</button>
+                                </div>
+                                <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 pt-2">
+                                    <a type="submit" href="/register" class="btn btn-secondary">Créer un nouveau
+                                        compte
+                                    </a>
+                                </div>
+                                <input type="hidden" name="redirect" t-att-value="redirect"/>
+                            </form>
+                            <script>
+                                function onlyNumberKey(evt) {
+
+                                // Only ASCII character in that range allowed
+                                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                                if (ASCIICode &gt; 31 &amp;&amp; (ASCIICode&lt;48 || ASCIICode > 57))
+                                return false;
+                                return true;
+                                }
+                            </script>
+
+                        </div>
+                    </t>
+
+                    <!-- Both -->
+                    <t t-elif="both">
+                        <div id="both-form col-10" class="col-sm-8 col-md-8 col-lg-8">
+                            <!-- Toggle Buttons Email & Phone -->
+                            <div class="oe_login_form mb-1 mt-0">
+                                <div class="btn-group btn-group-toggle w-100 pb-3" data-toggle="buttons">
+                                    <label class="labelEmail btn btn-primary active w-100">
+                                        <input class="hidden" type="radio" name="options" id="option1"
+                                               autocomplete="off"
+                                               value="checked"/>
+                                        Email
+                                    </label>
+                                    <label class="labelTelephone btn btn-light w-100" style="color:#185fa5;">
+                                        <input class="hidden" type="radio" name="options" id="option2"
+                                               autocomplete="off"/>
+                                        Téléphone
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div id="mail_" class="">
+                                <form class="oe_login_form mb-1 mt-0" role="form" t-attf-action="/web/login"
+                                      method="post"
+                                      onsubmit="this.action = '/web/login' + location.hash">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <p class="alert alert-danger" t-if="error" role="alert">
+                                        <t t-esc="error"/>
+                                    </p>
+                                    <p class="alert alert-success" t-if="message" role="status">
+                                        <t t-esc="message"/>
+                                    </p>
+                                    <div class="mb-3" t-if="databases and len(databases) &gt; 1">
+                                        <label for="db" class="col-form-label">Database</label>
+                                        <div t-attf-class="input-group {{'input-group-sm' if form_small else ''}}">
+                                            <input type="text" name="db" t-att-value="request.db" id="db"
+                                                   t-attf-class="form-control #{'form-control-sm' if form_small else ''}"
+                                                   required="required" readonly="readonly"/>
+                                            <a role="button" href="/web/database/selector" class="btn btn-secondary">
+                                                Select
+                                                <i class="fa fa-database" role="img" aria-label="Database"
+                                                   title="Database"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 field-login">
+                                        <!-- Email Input-->
+                                        <div class="input-group">
+                                            <input type="text" placeholder="Email" name="login" t-att-value="login"
+                                                   id="login"
+                                                   t-attf-class="form-control #{'form-control-sm' if form_small else ''} login border-0"
+                                                   required="" autofocus="autofocus" autocapitalize="off"/>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text h-100 bg-white border-0">
+                                                    <span class="fa fa-envelope" style="color:#185fa5;"/>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <!--                                <label for="password" class="form-label invisible">Password</label>-->
+                                        <div class="input-group fieldd">
+                                            <input type="password" placeholder="Password" name="password"
+                                                   id="password"
+                                                   t-attf-class="form-control #{'form-control-sm' if form_small else ''} password secupass border-0"
+                                                   required="" autocomplete="current-password"
+                                                   t-att-autofocus="'autofocus' if login else None"
+                                                   maxlength="4096"/>
+                                            <div class="show-pass">
+                                                <i class="material-icons">visibility</i>
+                                            </div>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text h-100 bg-white border-0">
+                                                    <span class="fa fa-lock" style="color:#185fa5;"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="progres-bar d-none">
+                                            <div/>
+                                            <div/>
+                                            <div/>
+                                            <div/>
+                                        </div>
+                                        <div class="pourcentage hidden">
+                                            <div class="digit">0</div>%
+                                        </div>
+                                    </div>
+
+                                    <div class="justify-content-center mt-2 d-flex">
+                                        <a href="/web/reset_password" class="btn btn-link btn-sm" role="button"
+                                           style="font-size: 1rem">Mot de Passe Oublié ?
+                                        </a>
+                                        <!--                                    <div class="o_login_auth"/>-->
+                                    </div>
+
+<!--                                    <t t-call="mediano_website.recaptcha"/>-->
+
+                                    <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 {{'pt-2' if form_small else 'pt-3'}}">
+                                        <button type="submit" class="btn btn-primary">Connexion</button>
+                                    </div>
+                                    <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 pt-2">
+                                        <a type="submit" href="/register" class="btn btn-secondary">Créer un nouveau
+                                            compte
+                                        </a>
+                                    </div>
+                                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                                </form>
+                            </div>
+
+                            <div id="phone_" class="hidden">
+                                <form class="oe_login_form mb-1 mt-0" role="form" t-attf-action="/web/login"
+                                      method="post"
+                                      onsubmit="this.action = '/web/login' + location.hash">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <p class="alert alert-danger" t-if="error1" role="alert">
+                                        <t t-esc="error"/>
+                                    </p>
+                                    <p class="alert alert-success" t-if="message" role="status">
+                                        <t t-esc="message"/>
+                                    </p>
+                                    <div class="mb-3" t-if="databases and len(databases) &gt; 1">
+                                        <label for="db" class="col-form-label">Database</label>
+                                        <div t-attf-class="input-group {{'input-group-sm' if form_small else ''}}">
+                                            <input type="text" name="db" t-att-value="request.db" id="db"
+                                                   t-attf-class="form-control #{'form-control-sm' if form_small else ''}"
+                                                   required="required" readonly="readonly"/>
+                                            <a role="button" href="/web/database/selector" class="btn btn-secondary">
+                                                Select
+                                                <i class="fa fa-database" role="img" aria-label="Database"
+                                                   title="Database"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 field-login">
+                                        <div class="input-group">
+                                            <input type="text" placeholder="N° de Téléphone" name="phone"
+                                                   t-att-value="phone" onkeypress="return onlyNumberKey(event)"
+                                                   id="phone"
+                                                   t-attf-class="form-control #{'form-control-sm' if form_small else ''} border-0"
+                                                   required="" autofocus="autofocus" autocapitalize="off"/>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text h-100 bg-white border-0">
+                                                    <span class="fa fa-mobile" style="color:#185fa5;"/>
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <!--                                <label for="password" class="form-label invisible">Password</label>-->
+                                        <div class="input-group fieldd">
+                                            <input type="password" placeholder="Password" name="password"
+                                                   id="password"
+                                                   t-attf-class="form-control #{'form-control-sm' if form_small else ''} password secupass border-0"
+                                                   required="" autocomplete="current-password"
+                                                   t-att-autofocus="'autofocus' if login else None"
+                                                   maxlength="4096"/>
+                                            <div class="show-pass">
+                                                <i class="material-icons">visibility</i>
+                                            </div>
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text h-100 bg-white border-0">
+                                                    <span class="fa fa-lock" style="color:#185fa5;"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="progres-bar d-none">
+                                            <div/>
+                                            <div/>
+                                            <div/>
+                                            <div/>
+                                        </div>
+                                        <div class="pourcentage hidden">
+                                            <div class="digit">0</div>%
+                                        </div>
+                                    </div>
+
+                                    <div class="justify-content-center mt-2 d-flex">
+                                        <a href="/web/reset_password" class="btn btn-link btn-sm" role="button"
+                                           style="font-size: 1rem">Mot de Passe Oublié ?
+                                        </a>
+                                        <!--                                    <div class="o_login_auth"/>-->
+                                    </div>
+                                    <!--                            <t t-call="mediano_website.recaptcha"/>-->
+                                    <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 {{'pt-2' if form_small else 'pt-3'}}">
+                                        <button type="submit" class="btn btn-primary">Connexion</button>
+                                    </div>
+                                    <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 pt-2">
+                                        <a type="submit" href="/register" class="btn btn-secondary">Créer un nouveau
+                                            compte
+                                        </a>
+                                    </div>
+                                    <input type="hidden" name="redirect" t-att-value="redirect"/>
+                                </form>
+                                <script>
+                                    function onlyNumberKey(evt) {
+
+                                    // Only ASCII character in that range allowed
+                                    var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                                    if (ASCIICode &gt; 31 &amp;&amp; (ASCIICode&lt;48 || ASCIICode > 57))
+                                    return false;
+                                    return true;
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Email Only -->
+                    <t t-else="">
+                        <div id="email-form col-10" class="col-sm-8 col-md-8 col-lg-8">
+                            <form class="oe_login_form mb-1 mt-0" role="form" t-attf-action="/web/login" method="post"
+                                  onsubmit="this.action = '/web/login' + location.hash">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <p class="alert alert-danger" t-if="error" role="alert">
+                                    <t t-esc="error"/>
+                                </p>
+                                <p class="alert alert-success" t-if="message" role="status">
+                                    <t t-esc="message"/>
+                                </p>
+                                <div class="mb-3" t-if="databases and len(databases) &gt; 1">
+                                    <label for="db" class="col-form-label">Database</label>
+                                    <div t-attf-class="input-group {{'input-group-sm' if form_small else ''}}">
+                                        <input type="text" name="db" t-att-value="request.db" id="db"
+                                               t-attf-class="form-control #{'form-control-sm' if form_small else ''}"
+                                               required="required" readonly="readonly"/>
+                                        <a role="button" href="/web/database/selector" class="btn btn-secondary">Select
+                                            <i class="fa fa-database" role="img" aria-label="Database"
+                                               title="Database"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Email Input Only -->
+                                <div class="mb-3 field-login">
+                                    <!-- Email Input-->
+                                    <div class="input-group">
+                                        <input type="text" placeholder="Email" name="login" t-att-value="login"
+                                               id="login"
+                                               t-attf-class="form-control #{'form-control-sm' if form_small else ''} login border-0"
+                                               required="required" autofocus="autofocus" autocapitalize="off"/>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100 bg-white border-0">
+                                                <span class="fa fa-envelope" style="color:#185fa5;"/>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <!--                                <label for="password" class="form-label invisible">Password</label>-->
+                                    <div class="input-group fieldd">
+                                        <input type="password" placeholder="Password" name="password" id="password"
+                                               t-attf-class="form-control #{'form-control-sm' if form_small else ''} password secupass border-0"
+                                               required="required" autocomplete="current-password"
+                                               t-att-autofocus="'autofocus' if login else None" maxlength="4096"/>
+                                        <div class="show-pass">
+                                            <i class="material-icons">visibility</i>
+                                        </div>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100 bg-white border-0">
+                                                <span class="fa fa-lock" style="color:#185fa5;"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="progres-bar d-none">
+                                        <div/>
+                                        <div/>
+                                        <div/>
+                                        <div/>
+                                    </div>
+                                    <div class="pourcentage hidden">
+                                        <div class="digit">0</div>%
+                                    </div>
+                                </div>
+                                <div class="justify-content-center mt-2 d-flex">
+                                    <a href="/web/reset_password" class="btn btn-link btn-sm" role="button"
+                                       style="font-size: 1rem">Mot de Passe Oublié ?
+                                    </a>
+                                    <!--                                    <div class="o_login_auth"/>-->
+                                </div>
+<!--                                <t t-call="mediano_website.recaptcha"/>-->
+                                <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 {{'pt-2' if form_small else 'pt-3'}}">
+                                    <button type="submit" class="btn btn-primary">Connexion</button>
+                                </div>
+                                <div t-attf-class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 pt-2">
+                                    <a type="submit" href="/register" class="btn btn-secondary">Créer un nouveau
+                                        compte
+                                    </a>
+                                </div>
+                                <input type="hidden" name="redirect" t-att-value="redirect"/>
+                            </form>
+
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <!-- Web Reset password -->
+        <template id="auth_signup.reset_password" name="Reset password">
+            <t t-call="web.login_layout">
+                <div class="form-modal flex-column">
+                    <div id="div-logo">
+                        <img src="/mediano_website/static/src/img/logo.png" class="logo-mediano"/>
+                    </div>
+                    <div class="text-center mb-4 px-1">
+                        <span class="reset">Réinitialisation du mot de passe</span>
+                        <p class="mb-0">Veuillez entrer votre adresse e-mail</p>
+                    </div>
+                    <div id="mobile-form" class="col-10 col-sm-8 col-md-8 col-lg-8">
+                        <div t-if="message" class="oe_login_form clearfix">
+                            <div id="div-logo">
+                                <img src="/mediano_website/static/src/img/logo.png" class="logo-mediano"/>
+                            </div>
+                            <div class="text-center mb-4">
+                                <span class="reset">Lien de réinitialisation envoyé</span>
+                            </div>
+                            <p class="alert alert-success" t-if="message" role="status">
+                                <t t-esc="message"/>
+                            </p>
+                            <div class="justify-content-center mt-2 d-flex small">
+                                <a href="/web/login" class="btn btn-link btn-sm float-right" role="button"
+                                   style="font-weight:bold;">Back to Login
+                                </a>
+                            </div>
+                            <div class="o_login_auth"/>
+                        </div>
+
+                        <form class="oe_login_form my-0" role="form" method="post" t-if="not message">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <t t-if="token and not invalid_token">
+                                <t t-call="auth_signup.fields">
+                                    <t t-set="only_passwords" t-value="1"/>
+                                </t>
+                            </t>
+
+                            <t t-if="not token">
+                                <div class="mb-3 field-login">
+                                    <div class="input-group">
+                                        <!--                                    <label for="login" class="col-form-label">Your Email</label>-->
+                                        <input type="text" name="login" placeholder="Email" t-att-value="login"
+                                               id="login"
+                                               class="form-control border-0"
+                                               autofocus="autofocus" required="required" autocapitalize="off"/>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100 bg-white border-0">
+                                                <span class="fa fa-envelope" style="color:#185fa5;"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <p class="alert alert-danger" t-if="error" role="alert">
+                                <t t-esc="error"/>
+                            </p>
+                            <input type="hidden" name="redirect" t-att-value="redirect"/>
+                            <input type="hidden" name="token" t-att-value="token"/>
+<!--                            <t t-call="mediano_website.recaptcha"/>-->
+                            <div class="clearfix oe_login_buttons text-center gap-1 d-grid mb-1 {{'pt-2' if form_small else 'pt-3'}}">
+                                <button type="submit" class="btn btn-primary btn-block">Confirmer</button>
+                                <div class="justify-content-between align-items-center small mt-2">
+                                    <a t-if="not token" t-attf-href="/web/login?{{ keep_query() }}">Back to Login
+                                    </a>
+                                    <a t-if="invalid_token" href="/web/login">Back to Login
+                                    </a>
+                                </div>
+                                <div class="o_login_auth"/>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Masquer le header du menu sur téléphone et tablette -->
+        <template id="website.template_header_contact_oe_structure_header_contact_1"
+                  inherit_id="website.template_header_contact"
+                  name="Template Header Contact (oe_structure_header_contact_1)">
+            <xpath expr="//*[hasclass('oe_structure')][@id='oe_structure_header_contact_1']" position="replace">
+                <div class="oe_structure oe_structure_solo d-none d-xl-block" id="oe_structure_header_contact_1">
+                    <section class="s_text_block pt8 pb8 o_cc o_cc2" data-snippet="s_text_block" data-name="Text">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col-lg-8">
+                                    <small>
+                                        <i class="fa fa-1x fa-fw fa-phone me-2"/>
+                                        <span class="me-3">
+                                            <a href="tel:+1 (650) 555-0111">+1 (650) 555-0111</a>
+                                        </span>
+                                        <i class="fa fa-1x fa-fw fa-envelope me-2 d-inline"/>
+                                        <span>
+                                            <a href="mailto:info@yourcompany.example.com">info@yourcompany.example.com
+                                            </a>
+                                        </span>
+                                    </small>
+                                </div>
+                                <div class="col-lg-4 text-lg-end">
+                                    <div class="s_social_media no_icon_color o_not_editable"
+                                         data-snippet="s_social_media" data-name="Social Media" contenteditable="false">
+                                        <small class="s_social_media_title text-muted d-none" contenteditable="true">
+                                            <b>Follow us</b>
+                                        </small>
+                                        <a href="/website/social/facebook" class="s_social_media_facebook"
+                                           target="_blank">
+                                            <i class="fa fa-facebook m-1"/>
+                                        </a>
+                                        <a href="/website/social/twitter" class="s_social_media_twitter"
+                                           target="_blank">
+                                            <i class="fa fa-twitter m-1"/>
+                                        </a>
+                                        <a href="/website/social/linkedin" class="s_social_media_linkedin"
+                                           target="_blank">
+                                            <i class="fa fa-linkedin m-1"/>
+                                        </a>
+                                        <a href="/website/social/github" class="s_social_media_github" target="_blank">
+                                            <i class="fa fa-github m-1"/>
+                                        </a>
+                                        <a href="/website/social/youtube" class="s_social_media_youtube"
+                                           target="_blank">
+                                            <i class="fa fa-youtube m-1"/>
+                                        </a>
+                                        <a href="/website/social/instagram" class="s_social_media_instagram"
+                                           target="_blank">
+                                            <i class="fa fa-instagram m-1"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="website.template_header_contact" inherit_id="website.layout" name="Template Header Contact"
+                  active="False">
+            <xpath expr="//header//nav" position="replace">
+                <div class="oe_structure oe_structure_solo" id="oe_structure_header_contact_1"/>
+                <t t-call="website.navbar">
+                    <t t-set="_navbar_classes" t-valuef="shadow-sm"/>
+                    <div id="top_menu_container" class="container">
+                        <!-- Brand -->
+                        <t t-call="website.placeholder_header_brand"/>
+                        <!-- Navbar Toggler -->
+                        <t t-call="website.navbar_toggler"/>
+                        <!-- Call To Action -->
+                        <t t-call="website.placeholder_header_call_to_action">
+                            <t t-set="_div_classes" t-valuef="d-block d-lg-none"/>
+                        </t>
+                        <!-- Navbar Collapse -->
+                        <div id="top_menu_collapse" class="collapse navbar-collapse ms-lg-3">
+                            <t t-call="website.navbar_nav">
+                                <t t-set="_nav_class" t-valuef="flex-grow-1"/>
+                                <!-- Menu -->
+                                <t t-foreach="website.menu_id.child_id" t-as="submenu">
+                                    <t t-call="website.submenu">
+                                        <t t-set="item_class" t-valuef="nav-item"/>
+                                        <t t-set="link_class" t-valuef="nav-link"/>
+                                    </t>
+                                </t>
+                                <!-- Sign In -->
+                                <t t-call="portal.placeholder_user_sign_in">
+                                    <t t-set="_item_class" t-valuef="nav-item ms-lg-auto"/>
+                                    <t t-set="_link_class" t-valuef="nav-link"/>
+                                </t>
+                                <!-- User Dropdown -->
+                                <t t-call="portal.user_dropdown">
+                                    <t t-set="_user_name" t-value="True"/>
+                                    <t t-set="_user_name_class" t-valuef="fw-bold"/>
+                                    <t t-set="_item_class" t-valuef="nav-item dropdown ms-lg-auto"/>
+                                    <t t-set="_link_class" t-valuef="nav-link"/>
+                                </t>
+                            </t>
+                            <!-- Language Selector -->
+                            <t t-call="website.placeholder_header_language_selector">
+                                <t t-set="_div_classes" t-valuef="my-auto ms-lg-2 align-self-lg-center"/>
+                            </t>
+                            <!-- Call To Action -->
+                            <t t-call="website.placeholder_header_call_to_action">
+                                <t t-set="_div_classes" t-valuef="d-none d-lg-block ms-3"/>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+        </template>
+
+        <!-- Retrait de la propriété md-lg-auto -->
+        <!-- Cause du Bug sur le bouton ou il y'a le nom de l'utilisateur -->
+        <!--        <template id='user_dropdown_modded' inherit_id="portal.user_dropdown" name="Portal User Dropdown">-->
+        <!--            <xpath expr="//li[contains(@t-attf-class, 'o_no_autohide_item')]" position="replace">-->
+        <!--                <li t-if="is_connected" t-attf-class="#nav-item dropdown o_no_autohide_item">-->
+        <!--                    <a href="#" role="button" data-toggle="dropdown" t-attf-class="dropdown-toggle #{_link_class}">-->
+        <!--                        <t t-if="_avatar">-->
+        <!--                            <t t-set="avatar_source" t-value="image_data_uri(user_id.avatar_256)"/>-->
+        <!--                            <img t-att-src="avatar_source"-->
+        <!--                                 t-attf-class="rounded-circle o_object_fit_cover #{_avatar_class}"-->
+        <!--                                 width="24" height="24" alt="" loading="eager"/>-->
+        <!--                        </t>-->
+        <!--                        <i t-if="_icon" t-attf-class="fa fa-1x fa-fw fa-user-circle-o #{_icon_class}"/>-->
+        <!--                        <span t-if="_user_name" t-attf-class="#{_user_name_class}"-->
+        <!--                              t-esc="user_id.name[:23] + '...' if user_id.name and len(user_id.name) &gt; 25 else user_id.name"/>-->
+        <!--                    </a>-->
+        <!--                    <div t-attf-class="dropdown-menu js_usermenu #{_dropdown_menu_class}" role="menu">-->
+        <!--                        <a groups="base.group_user" href="/web" role="menuitem" class="dropdown-item ps-3"-->
+        <!--                           id="o_backend_user_dropdown_link">-->
+        <!--                            <i class="fa fa-fw fa-th me-1 small text-muted"/>-->
+        <!--                            Apps-->
+        <!--                        </a>-->
+        <!--                        <div id="o_logout_divider" class="dropdown-divider"/>-->
+        <!--                        <a t-attf-href="/web/session/logout?redirect=/" role="menuitem" id="o_logout"-->
+        <!--                           class="dropdown-item">-->
+        <!--                            Logout-->
+        <!--                        </a>-->
+        <!--                    </div>-->
+        <!--                </li>-->
+        <!--            </xpath>-->
+        <!--        </template>-->
+    </data>
+</odoo>

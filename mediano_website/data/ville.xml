@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="res.ville" id="1">
+            <field name="name">Abengourou</field>
+        </record>
+        <record model="res.ville" id="2">
+            <field name="name">Abidjan</field>
+        </record>
+        <record model="res.ville" id="3">
+            <field name="name">Aboisso</field>
+        </record>
+        <record model="res.ville" id="4">
+            <field name="name">Adzopé</field>
+        </record>
+        <record model="res.ville" id="5">
+            <field name="name">Agboville</field>
+        </record>
+        <record model="res.ville" id="6">
+            <field name="name">Agnibilékro</field>
+        </record>
+        <record model="res.ville" id="7">
+            <field name="name">Akoupé</field>
+        </record>
+        <record model="res.ville" id="8">
+            <field name="name">Anyama</field>
+        </record>
+        <record model="res.ville" id="9">
+            <field name="name">Bondoukou</field>
+        </record>
+        <record model="res.ville" id="10">
+            <field name="name">Bonon</field>
+        </record>
+        <record model="res.ville" id="11">
+            <field name="name">Bouaflé</field>
+        </record>
+        <record model="res.ville" id="12">
+            <field name="name">Bouaké</field>
+        </record>
+        <record model="res.ville" id="13">
+            <field name="name">Boundiali</field>
+        </record>
+        <record model="res.ville" id="14">
+            <field name="name">Dabou</field>
+        </record>
+        <record model="res.ville" id="15">
+            <field name="name">Daloa</field>
+        </record>
+        <record model="res.ville" id="16">
+            <field name="name">Danané</field>
+        </record>
+        <record model="res.ville" id="17">
+            <field name="name">Daoukro</field>
+        </record>
+        <record model="res.ville" id="18">
+            <field name="name">Divo</field>
+        </record>
+        <record model="res.ville" id="19">
+            <field name="name">Dimbokro</field>
+        </record>
+        <record model="res.ville" id="20">
+            <field name="name">Duékoué</field>
+        </record>
+        <record model="res.ville" id="21">
+            <field name="name">Ferkessedougou</field>
+        </record>
+        <record model="res.ville" id="22">
+            <field name="name">Gagnoa</field>
+        </record>
+        <record model="res.ville" id="23">
+            <field name="name">Grand - Bassam</field>
+        </record>
+        <record model="res.ville" id="24">
+            <field name="name">Guiglo</field>
+        </record>
+        <record model="res.ville" id="25">
+            <field name="name">Issia</field>
+        </record>
+        <record model="res.ville" id="26">
+            <field name="name">Katiola</field>
+        </record>
+        <record model="res.ville" id="27">
+            <field name="name">Korhogo</field>
+        </record>
+        <record model="res.ville" id="28">
+            <field name="name">Lakota</field>
+        </record>
+        <record model="res.ville" id="29">
+            <field name="name">Méagui</field>
+        </record>
+        <record model="res.ville" id="30">
+            <field name="name">Man</field>
+        </record>
+        <record model="res.ville" id="31">
+            <field name="name">Oumé</field>
+        </record>
+        <record model="res.ville" id="32">
+            <field name="name">Odienné</field>
+        </record>
+        <record model="res.ville" id="33">
+            <field name="name">San - Pédro</field>
+        </record>
+        <record model="res.ville" id="34">
+            <field name="name">Séguéla</field>
+        </record>
+        <record model="res.ville" id="35">
+            <field name="name">Sinfra</field>
+        </record>
+        <record model="res.ville" id="36">
+            <field name="name">Soubré</field>
+        </record>
+        <record model="res.ville" id="37">
+            <field name="name">Tiassalé</field>
+        </record>
+        <record model="res.ville" id="38">
+            <field name="name">Tingréla</field>
+        </record>
+        <record model="res.ville" id="39">
+            <field name="name">Toumodi</field>
+        </record>
+        <record model="res.ville" id="40">
+            <field name="name">Vavoua</field>
+        </record>
+        <record model="res.ville" id="41">
+            <field name="name">Yamoussoukro</field>
+        </record>
+        <record model="res.ville" id="42">
+            <field name="name">Zagné</field>
+        </record>
+        <record model="res.ville" id="43">
+            <field name="name">Zuénoulaé</field>
+        </record>
+    </data>
+</odoo>

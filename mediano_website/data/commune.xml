@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record model="res.commune" id="1">
+      <field name="name">Abobo</field>
+    </record>
+    <record model="res.commune" id="2">
+      <field name="name">Adjamé</field>
+    </record>
+    <record model="res.commune" id="3">
+      <field name="name">Anyama</field>
+    </record>
+    <record model="res.commune" id="4">
+      <field name="name">Attécoubé</field>
+    </record>
+    <record model="res.commune" id="5">
+      <field name="name">Bingerville</field>
+    </record>
+    <record model="res.commune" id="6">
+      <field name="name">Cocody</field>
+    </record>
+    <record model="res.commune" id="7">
+      <field name="name">Koumassi</field>
+    </record>
+    <record model="res.commune" id="8">
+      <field name="name">Marcory</field>
+    </record>
+    <record model="res.commune" id="9">
+      <field name="name">Plateau</field>
+    </record>
+    <record model="res.commune" id="10">
+      <field name="name">Port bouët</field>
+    </record>
+    <record model="res.commune" id="11">
+      <field name="name">Treichville</field>
+    </record>
+    <record model="res.commune" id="12">
+      <field name="name">Songon</field>
+    </record>
+    <record model="res.commune" id="13">
+      <field name="name">Yopougon</field>
+    </record>
+  </data>
+</odoo>
