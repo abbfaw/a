@@ -1,0 +1,229 @@
+<odoo>
+    <data>
+        <!-- page de coordoonées pour les utilisateurs publiques -->
+        <template id="address2">
+            <t t-set="no_footer" t-value="1"/>
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="container oe_website_sale py-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <t t-call="website_sale.wizard_checkout">
+                                    <t t-set="step" t-value="20"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-xl-auto order-xl-2 d-none d-xl-block">
+                                <t t-call="website_sale.cart_summary">
+                                    <t t-set="hide_promotions">True</t>
+                                    <t t-set="redirect" t-valuef="/shop/quotation"/>
+                                </t>
+                            </div>
+                            <div class="col-12 col-xl order-xl-1 oe_cart">
+                                <div>
+                                    <t t-if="mode == ('new', 'billing')">
+                                        <h2 class="o_page_header mt8">Adresse de Livraison</h2>
+                                    </t>
+
+                                    <!-- Affichage Message d'Erreur -->
+                                    <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
+                                        <h5 class="text-danger" t-esc="err"/>
+                                    </t>
+
+                                    <!-- Action pour l'envoi du formulaire -->
+                                    <form action="/shop/quotation" method="post" class="checkout_autoformat">
+
+                                        <div class="row">
+                                            <!-- Champ Nom -->
+                                            <div t-attf-class="mb-3 #{error.get('name') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_name">
+                                                <label t-attf-class="col-form-label" for="name">Nom</label>
+                                                <div class="input-group">
+                                                    <input type="text" name="name"
+                                                           t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}"
+                                                           t-att-value="'name' in checkout and checkout['name']"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <!-- Champ Email -->
+                                            <div t-attf-class="mb-3 #{error.get('email') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_email">
+                                                <label t-attf-class="col-form-label" for="email">Email</label>
+                                                <div class="input-group">
+                                                    <input type="email" name="email"
+                                                           t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}"
+                                                           t-att-value="'email' in checkout and checkout['email']"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div class="w-100"/>
+
+                                            <!-- Champ Téléphone -->
+                                            <div t-attf-class="mb-3 #{error.get('phone') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_phone">
+                                                <label class="col-form-label" for="phone">Téléphone</label>
+                                                <div class="input-group">
+                                                    <input type="tel" name="phone"
+                                                           onkeypress="return onlyNumberKey(event)"
+                                                           t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}"
+                                                           t-att-value="'phone' in checkout and checkout['phone']"
+                                                    />
+                                                </div>
+                                            </div>
+
+
+                                            <!-- Champ de Sélection pour la Ville -->
+                                            <div t-attf-class="mb-3 #{error.get('city') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_city">
+                                                <label class="col-form-label" for="city">Ville</label>
+                                                <div class="input-group">
+                                                    <select id="city" name="city" t-attf-class="form-control"
+                                                            t-att-mode="mode[1]" required="">
+                                                        <option value="abidjan">Abidjan</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <script>
+                                                function onlyNumberKey(evt) {
+
+                                                // Only ASCII character in that range allowed
+                                                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                                                if (ASCIICode &gt; 31 &amp;&amp; (ASCIICode&lt;48 || ASCIICode >
+                                                57))
+                                                return false;
+                                                return true;
+                                                }
+                                            </script>
+
+                                            <div class="w-100"/>
+
+                                            <div>
+                                                <h2 class="o_page_header mt8">Adresse</h2>
+
+                                                <div class="row">
+                                                    <!-- Champ de Sélection pour la Commune -->
+                                                    <div t-attf-class="mb-3 #{error.get('commune_id') and 'o_has_error' or ''} col-xl-6"
+                                                         id="div_city">
+                                                        <label class="col-form-label" for="commune_id">Communes
+                                                        </label>
+                                                        <div class="input-group">
+                                                            <select name="commune_id"
+                                                                    t-attf-class="form-select #{error.get('commune_id') and 'is-invalid' or ''}"
+                                                                    data-init="1">
+                                                                <option value="">Commune...</option>
+                                                                <t t-foreach="communes" t-as="com">
+                                                                    <option t-att-value="com.id"
+                                                                            t-att-selected="com.id == ('commune_id' in checkout and checkout['commune_id'] != '' and int(checkout['commune_id']))">
+                                                                        <t t-esc="com.name"/>
+                                                                    </option>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Plus de détail -->
+                                                    <div t-attf-class="mb-3 col-xl-6" id="div_country">
+                                                        <label class="col-form-label" for="details">Plus de Détail
+                                                        </label>
+                                                        <div class="input-group">
+                                                            <input t-attf-class="form-control" name="details"
+                                                                   placeholder="Rue du canal, Zone 4, Bloc 4 Seifi"
+                                                                   t-att-value="'plus_detail' in checkout and checkout['plus_detail']"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="submitted" value="1"/>
+                                        <input type="hidden" name="partner_id" t-att-value="partner_id or '0'"/>
+
+                                        <!-- Champs obligatoire dans le formulaire -->
+                                        <input type="hidden" name="field_required"
+                                               t-att-value="'phone,name,commune_id'"/>
+
+                                        <div class="d-flex justify-content-between">
+                                            <a role="button"
+                                               t-att-href="'/shop'"
+                                               class="btn btn-secondary mb32">
+                                                <i class="fa fa-chevron-left"/>
+                                                <span>Retour</span>
+                                            </a>
+                                            <a role="button" href="#"
+                                               class="btn btn-primary mb32 a-submit a-submit-disable a-submit-loading">
+                                                <span>Suivant</span>
+                                                <i class="fa fa-chevron-right"/>
+                                            </a>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Message de Quotation -->
+        <template id="quotation_message" name="Demande de quotation">
+            <t t-set="no_footer" t-value="1"/>
+            <t t-call="website.layout">
+                <div id="wrap">
+                    <div class="container oe_website_sale py-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <t t-call="website_sale.wizard_checkout">
+                                    <t t-set="step" t-value="40"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-xl order-xl-1 oe_cart">
+                                <div>
+                                    <h2 class="o_page_header mt8">Demande de quotation envoyé</h2>
+
+                                    <div class="card-header mb-3">
+                                        <!-- Layout avec les informations de paiement -->
+                                        <div class="d-flex flex-column align-items-center text-center text-sm-start">
+                                            <div class="bg-sm-light text-center p-3 rounded-3">
+                                                <img class="img-fluid w-50 w-sm-25"
+                                                     src="https://assets.unlayer.com/projects/149249/1680002453979-Plan%20de%20travail%201@4x.png"/>
+                                            </div>
+
+                                            <div class="d-flex flex-column justify-content-between py-2 flex-sm-row w-100">
+                                                <!-- Thank You message -->
+                                                <div>
+
+                                                    <h5 class="fw-light text-center">
+                                                        Votre demande de quotation a bien été envoyée, vous recevrez une
+                                                        réponse dans les plus brefs délais de la part de nos services.
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action pour l'envoi du formulaire -->
+                                    <div class="d-flex justify-content-between float-end">
+                                        <a role="button" t-att-href="'/shop'" class="btn btn-secondary mb32">
+                                            <span>Boutique</span>
+                                            <i class="fa fa-chevron-right"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+    </data>
+</odoo>

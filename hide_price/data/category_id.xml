@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- création de l'étiquette dans les contacts -->
+        <record id="res_partner_category_15" model="res.partner.category">
+            <field name="name">Visiteurs</field>
+            <field name="color" eval="9"/>
+        </record>
+
+        <!-- création de l'étiquette dans les ventes -->
+        <record id="categ_oppor9" model="crm.tag">
+            <field name="name">Visiteurs</field>
+            <field name="color" eval="9"/>
+        </record>
+    </data>
+</odoo>
