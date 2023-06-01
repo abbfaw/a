@@ -1,0 +1,49 @@
+div.progres-bar{
+    padding: 1% 0%;
+    margin-top: 1%;
+    display: flex;
+    justify-content: space-between;
+}
+div.progres-bar > div {
+    width: 22%;
+    height: 8px;
+    border-radius: 5px;
+    background-color: #bddfff;
+}
+
+div.progres-bar-confirm{
+    padding: 1% 0%;
+    margin-top: 1%;
+    display: flex;
+    justify-content: space-between;
+}
+div.progres-bar-confirm > div {
+    width: 22%;
+    height: 8px;
+    border-radius: 5px;
+    background-color: #bddfff;
+}
+
+div.fieldd{
+    border-radius: 5px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+div.show-pass, div.show-pass-confirm, div.show-pass-login{
+    font-size: 100%;
+    font-weight: 900;
+    color: #185fa5;
+    margin: 1%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+i.material-icons{
+    font-size: 90%;
+}
+div.show-pass::selection, div.gen-pass::selection, div.show-pass > *::selection, div.gen-pass > *::selection{
+    background: none;
+}

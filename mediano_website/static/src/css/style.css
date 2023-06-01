@@ -1,0 +1,129 @@
+
+/*@import url('https://fonts.googleapis.com/css?family=Montserrat|Quicksand');*/
+
+.title {
+    font-size: 4vh;
+    font-weight:bold;
+    text-align:center;
+}
+
+.reset {
+    font-size:19px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.hidden {
+    display: none;
+}
+
+*{
+    font-family: 'quicksand',Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+.form-modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ccc;
+    box-shadow: 0 3px 20px 0px rgba(0, 0, 0, 0.1);
+    background-image: url('https://img.freepik.com/free-photo/blue-abstract-gradient-wave-wallpaper_53876-108364.jpg?w=1060&t=st=1672935483~exp=1672936083~hmac=1d26d9baba5f249616fb0971a3f3f16e051ed6d088616352e1311a7a91bca48f');
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding-bottom: 10vh;
+}
+
+.cart_modded {
+	margin-right: 10px;
+	/*text-align: end;
+	flex-grow: 2;*/
+}
+
+.form-back {
+	background-image: url('https://img.freepik.com/free-photo/blue-abstract-gradient-wave-wallpaper_53876-108364.jpg?w=1060&t=st=1672935483~exp=1672936083~hmac=1d26d9baba5f249616fb0971a3f3f16e051ed6d088616352e1311a7a91bca48f');
+	background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#div-logo{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-mediano {
+height: 16vh;
+}
+
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
+}
+
+.center-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;;
+  height: auto;
+}
+
+.nav-link.active {
+  color: rgb(12, 89, 168);
+}
+
+.radio {
+  min-height: 20px;
+  padding-left: 20px;
+  margin-bottom: 0;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.separator-bar {
+    border-bottom: 1px solid #0b58a7;
+    width: 50%;
+    display: flex;
+    margin: auto;
+}
+
+#register_question{
+display: block;
+}
+
+.btn-secondary {
+    color: #FFFFFF;
+    background-color: #6eab44;
+    border-color: #6eab44;
+}
+.Description{
+    padding: 0vh 2vh;
+}
+
+.oe_signup_form {
+    max-width: 349px;
+    position: relative;
+    margin: 50px auto;
+}
+
+.oe_login_form {
+    max-width: 349px;
+    position: relative;
+    margin: 50px auto;
+}
+
+.card-headerz {
+    padding: 0.5rem 1rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.cart-img{
+    height: 175px;
+    weight: 175px;
+    border: 0px;
+}

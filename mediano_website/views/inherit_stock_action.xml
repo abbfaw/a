@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Ajout d'un filtre par défault pour masquer les frais de livraisons -->
+        <record id="stock.stock_product_normal_action" model="ir.actions.act_window">
+            <field name="name">Product Variants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree,form,kanban</field>
+            <field name="search_view_id" ref="stock.stock_product_search_form_view"/>
+            <field name="context">{"search_default_filter_to_sell":1, "search_default_filter_to_purchase":1}</field>
+        </record>
+    </data>
+</odoo>

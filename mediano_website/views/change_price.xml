@@ -1,0 +1,50 @@
+<odoo>
+    <data>
+        <!-- Mettre les prix des variantes à la place de celui des articles car ils sont nul -->
+        <template id="product_itemz" inherit_id="website_sale.products_item" name="Products item">
+            <xpath expr="//*[hasclass('o_wsale_product_sub')]/div[hasclass('product_price')]"
+                   position="replace">
+                <div class="product_price" itemprop="offers" itemscope="itemscope"
+                     itemtype="http://schema.org/Offer">
+                    <t t-if="'base_price' in template_price_vals">
+                        <del t-attf-class="text-muted me-1 h6 mb-0" style="white-space: nowrap;">
+                            <em class="small" t-esc="template_price_vals['base_price']"
+                                t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                        </del>
+                    </t>
+                    <!-- recupération du prix des variables -->
+                    <t t-set="combination_info_variant"
+                       t-value="product._get_combination_info(ptav, pricelist=pricelist)"/>
+
+                    <!-- recupération du prix de l'article sans variable -->
+                    <t t-set="combination_info" t-value="product._get_combination_info(combination, add_qty=add_qty or 1, pricelist=pricelist)"/>
+
+                    <!-- COndition pour afficher tous les prix -->
+                    <t t-if="combination_info['price'] == 0">
+                        <span itemprop="price" style="display:none;" t-out="abs(combination_info_variant['price_extra'])"/>
+                        <span class="h6 mb-0"
+                          t-if="template_price_vals['price_reduce'] or not website.prevent_zero_price_sale"
+                          t-esc="combination_info_variant['price_extra']"
+                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    </t>
+                    <t t-else="">
+                        <span itemprop="price" style="display:none;" t-out="combination_info['price']"/>
+                        <span class="h6 mb-0"
+                          t-if="template_price_vals['price_reduce'] or not website.prevent_zero_price_sale"
+                          t-esc="combination_info['price']"
+                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                    </t>
+
+
+<!--                    <span class="h6 mb-0"-->
+<!--                          t-if="template_price_vals['price_reduce'] or not website.prevent_zero_price_sale"-->
+<!--                          t-esc="combination_info_variant['price_extra']"-->
+<!--                          t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>-->
+<!--                    <span class="h6 mb-0" t-else="" t-field="website.prevent_zero_price_sale_text"/>-->
+                    <span itemprop="price" style="display:none;" t-esc="template_price_vals['price_reduce']"/>
+                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

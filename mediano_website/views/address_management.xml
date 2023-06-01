@@ -1,0 +1,291 @@
+<odoo>
+    <data>
+        <!-- Champs pour remplir l'adresse -->
+        <template id="website_sale.address" name="Address Management">
+            <t t-set="no_footer" t-value="1"/>
+            <t t-call="website.layout">
+                <div class="form-back">
+                    <div class="container oe_website_sale py-2">
+                        <div class="row">
+                            <div class="col-12">
+                                <t t-call="website_sale.wizard_checkout">
+                                    <t t-set="step" t-value="20"/>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- Caché les offres promotionnelles et redirection vers la page adresse -->
+                            <div class="col-12 col-xl-auto order-xl-2 d-none d-xl-block">
+                                <t t-call="website_sale.cart_summary">
+                                    <t t-set="hide_promotions">True</t>
+                                    <t t-set="redirect" t-valuef="/shop/address"/>
+                                </t>
+                            </div>
+
+                            <div class="col-12 col-xl order-xl-1 oe_cart">
+                                <div>
+
+                                    <t t-if="mode == ('new', 'billing')">
+                                        <h2 class="o_page_header mt8">
+                                            <span t-if="account_on_checkout != 'mandatory'">Fill in your address</span>
+                                            <small class="text-muted" t-if="account_on_checkout == 'optional'">or
+                                            </small>
+                                            <a t-if="account_on_checkout != 'disabled'" role="button"
+                                               href='/web/login?redirect=/shop/checkout' style="margin-top: -11px">Sign
+                                                in
+                                            </a>
+                                        </h2>
+                                    </t>
+                                    <!-- Titre Adresse -->
+                                    <t t-if="mode == ('edit', 'billing')">
+                                        <h2 class="o_page_header mt8">Your Address</h2>
+                                    </t>
+                                    <!-- Adresse de Livraison -->
+                                    <t t-if="mode[1] == 'shipping'">
+                                        <h2 class="o_page_header mt8">Shipping Address</h2>
+                                    </t>
+
+                                    <!-- Affichage Message d'Errreur -->
+                                    <t t-if="error" t-foreach="error.get('error_message', [])" t-as="err">
+                                        <h5 class="text-danger" t-esc="err"/>
+                                    </t>
+
+                                    <!-- Action pour l'envoi du formulaire -->
+                                    <form t-if="account_on_checkout != 'mandatory' or not is_public_user"
+                                          action="/shop/address" method="post" class="checkout_autoformat">
+
+                                        <div class="row">
+                                            <!-- Champ Nom -->
+                                            <div t-attf-class="mb-3 #{error.get('name') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_name">
+                                                <label t-attf-class="col-form-label" for="name">Name</label>
+                                                <div class="input-group">
+                                                    <input type="text" name="name"
+                                                           t-attf-class="form-control #{error.get('name') and 'is-invalid' or ''}"
+                                                           t-att-value="'name' in checkout and checkout['name']"
+                                                           readonly=""/>
+                                                </div>
+                                            </div>
+
+                                            <!-- Champ Email -->
+                                            <div t-attf-class="mb-3 #{error.get('email') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_email">
+                                                <label t-attf-class="col-form-label" for="email">Email</label>
+                                                <div class="input-group">
+                                                    <input type="email" name="email"
+                                                           t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}"
+                                                           t-att-value="'email' in checkout and checkout['email']"
+                                                           readonly=""/>
+                                                </div>
+                                            </div>
+
+                                            <div class="w-100"/>
+
+                                            <!-- Champ Téléphone -->
+                                            <div t-attf-class="mb-3 #{error.get('phone') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_phone">
+                                                <label class="col-form-label" for="phone">Téléphone</label>
+                                                <div class="input-group">
+                                                    <input type="tel" name="phone"
+                                                           onkeypress="return onlyNumberKey(event)"
+                                                           t-attf-class="form-control #{error.get('phone') and 'is-invalid' or ''}"
+                                                           t-att-value="'phone' in checkout and checkout['phone']"
+                                                           readonly=""/>
+                                                </div>
+                                            </div>
+
+
+                                            <!-- Champ de Sélection pour la Ville -->
+                                            <div t-attf-class="mb-3 #{error.get('city') and 'o_has_error' or ''} col-xl-6"
+                                                 id="div_city">
+                                                <label class="col-form-label" for="city">Ville</label>
+                                                <div class="input-group">
+                                                    <select id="city" name="city" t-attf-class="form-control"
+                                                            t-att-mode="mode[1]" required="" readonly="">
+                                                        <option value="abidjan">Abidjan</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <script>
+                                                function onlyNumberKey(evt) {
+
+                                                // Only ASCII character in that range allowed
+                                                var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+                                                if (ASCIICode &gt; 31 &amp;&amp; (ASCIICode&lt;48 || ASCIICode > 57))
+                                                return false;
+                                                return true;
+                                                }
+                                            </script>
+
+                                            <div class="w-100"/>
+
+                                            <div>
+                                                <h2 class="o_page_header mt8">Adresse</h2>
+
+                                                <div class="row">
+                                                    <!-- Champ de Sélection pour la Commune -->
+                                                    <div t-attf-class="mb-3 #{error.get('commune_id') and 'o_has_error' or ''} col-xl-6"
+                                                         id="div_city">
+                                                        <label class="col-form-label" for="commune_id">Communes</label>
+                                                        <div class="input-group">
+                                                            <select name="commune_id"
+                                                                    t-attf-class="form-select #{error.get('commune_id') and 'is-invalid' or ''}"
+                                                                    data-init="1">
+                                                                <option value="">Commune...</option>
+                                                                <t t-foreach="communes" t-as="com">
+                                                                    <option t-att-value="com.id"
+                                                                            t-att-selected="com.id == ('commune_id' in checkout and checkout['commune_id'] != '' and int(checkout['commune_id']))">
+                                                                        <t t-esc="com.name"/>
+                                                                    </option>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Plus de détail -->
+                                                    <div t-attf-class="mb-3 col-xl-6" id="div_country">
+                                                        <label class="col-form-label" for="details">Plus de Détails
+                                                        </label>
+                                                        <div class="input-group">
+                                                            <input t-attf-class="form-control" name="details"
+                                                                   placeholder="Rue du canal, Zone 4, Bloc 4 Seifi"
+                                                                   t-att-value="'plus_detail' in checkout and checkout['plus_detail']"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="submitted" value="1"/>
+                                        <input type="hidden" name="partner_id" t-att-value="partner_id or '0'"/>
+                                        <input type="hidden" name="callback" t-att-value="callback"/>
+
+                                        <!-- Champs obligatoire dans le formulaire -->
+                                        <input type="hidden" name="field_required"
+                                               t-att-value="'phone,name,commune_id'"/>
+
+                                        <div class="d-flex justify-content-between">
+                                            <a role="button"
+                                               t-att-href="mode == ('new', 'billing') and '/shop/cart' or '/shop/checkout'"
+                                               class="btn btn-secondary mb32">
+                                                <i class="fa fa-chevron-left"/>
+                                                <span>Back</span>
+                                            </a>
+                                            <a role="button" href="#"
+                                               class="btn btn-primary mb32 a-submit a-submit-disable a-submit-loading">
+                                                <span>Next</span>
+                                                <i class="fa fa-chevron-right"/>
+                                            </a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- activation du mode edit du champs facturation et retrait de l'adresse de facturation -->
+        <template id="website_sale.checkout">
+            <t t-call="website.layout">
+                <t t-set="additional_title">Shop - Checkout</t>
+                <t t-set="no_footer" t-value="1"/>
+                <div id="wrap">
+                    <div class="container oe_website_sale py-2">
+                        <t t-set="same_shipping"
+                           t-value="bool(order.partner_shipping_id==order.partner_id or only_services)"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <t t-call="website_sale.wizard_checkout">
+                                    <t t-set="step" t-value="20"/>
+                                </t>
+                            </div>
+                            <div class="col-12 col-xl-auto order-xl-2 d-none d-xl-block">
+                                <t t-call="website_sale.cart_summary">
+                                    <t t-set="redirect" t-valuef="/shop/checkout"/>
+                                </t>
+                            </div>
+                            <div class="col-12 col-xl order-xl-1 oe_cart">
+                                <!--                                <div class="row">-->
+                                <!--                                    <div class="col-lg-12">-->
+                                <!--                                        <h3 class="o_page_header mt8">Billing Address</h3>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-lg-6 one_kanban">-->
+                                <!--                                        <t t-call="website_sale.address_kanban">-->
+                                <!--                                            <t t-set='contact' t-value="order.partner_id"/>-->
+                                <!--                                            <t t-set='selected' t-value="1"/>-->
+                                <!--                                            <t t-set='readonly' t-value="1"/>-->
+                                <!--                                            <t t-set='allow_edit' t-value="1"/>-->
+                                <!--                                        </t>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <t t-if="not only_services" groups="account.group_delivery_invoice_address">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h3 class="o_page_header mt16 mb4">Shipping Address</h3>
+                                        </div>
+                                    </div>
+                                    <div class="row all_shipping">
+                                        <div class="col-lg-12">
+                                            <div class="row mt8">
+                                                <div class="col-md-12 col-lg-12 one_kanban">
+                                                    <form action="/shop/address" method="post" class=''>
+                                                        <input type="hidden" name="csrf_token"
+                                                               t-att-value="request.csrf_token()"/>
+                                                        <a role="button" href="#"
+                                                           class='a-submit btn btn-secondary mb-2 btn-block'>
+                                                            <i class="fa fa-plus-square"/>
+                                                            <span>Add an address</span>
+                                                        </a>
+                                                    </form>
+                                                </div>
+                                                <t t-foreach="shippings" t-as="ship">
+                                                    <div class="col-md-12 col-lg-6 one_kanban mb-2">
+                                                        <t t-call="website_sale.address_kanban">
+                                                            <t t-set='contact' t-value="ship"/>
+                                                            <t t-set='selected'
+                                                               t-value="order.partner_shipping_id==ship"/>
+                                                            <t t-set='readonly' t-value="bool(len(shippings)==1)"/>
+                                                            <t t-set='edit_billing'
+                                                               t-value="bool(ship==order.partner_id)"/>
+                                                            <t t-if="ship == order.old_partner">
+                                                                <t t-set="allow_edit"
+                                                                   t-value="not order.old_partner"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <t t-set="allow_edit"
+                                                                   t-value="order.partner_id or (ship.id in order.partner_id.child_ids.ids)"/>
+                                                            </t>
+                                                        </t>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <a role="button" href="/shop/cart" class="btn btn-secondary mb32">
+                                        <i class="fa fa-chevron-left"/>
+                                        <span>Return to Cart</span>
+                                    </a>
+                                    <a role="button" href="/shop/confirm_order" class="btn btn-primary mb32">
+                                        <span>Confirm</span>
+                                        <i class="fa fa-chevron-right"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Alerte -->
+        <template id="website_sale.address_b2b" inherit_id="website_sale.address" name="Show b2b fields"/>
+
+    </data>
+</odoo>

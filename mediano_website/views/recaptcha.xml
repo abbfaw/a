@@ -1,0 +1,23 @@
+<odoo>
+    <template id="recaptcha">
+        <div class="d-flex justify-content-center">
+            <!-- Ajout de la div de recaptcha -->
+            <t t-if="request.env['res.config.settings'].sudo().search([('module_google_recaptcha', '=', True)])">
+                <script src='https://www.google.com/recaptcha/api.js'/>
+                <div id="captcha" class="imageContainer">
+                    <div class="form-group">
+                        <!-- specify your site  in data-sitekey attribute-->
+                        <t t-set="recaptcha_public_key"
+                           t-value="request.env['ir.config_parameter'].sudo().get_param('recaptcha_public_key')"/>
+                        <div class="g-recaptcha form-group" data-sitekey="recaptcha_public_key"/>
+                        <div class="help-block with-errors" id="err" style='color: red'/>
+                    </div>
+                </div>
+            </t>
+
+            <t t-else="">
+
+            </t>
+        </div>
+    </template>
+</odoo>

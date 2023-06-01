@@ -1,0 +1,55 @@
+<odoo>
+    <data>
+        <!-- Ajout d'un filtre pour trier les inscrits depuis le site web -->
+        <record id="view_res_partner_filter_inherit" model="ir.ui.view">
+            <field name="name">res.partner.view.search</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="after">
+                    <field name="from_web"/>
+                </field>
+                <xpath expr="//filter[@name='inactive']" position="after">
+                    <filter string="Inscrit depuis le web" name="commercial_partner_id"
+                            domain="[('partner_share', '=', True), ('from_web', '=', True)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Ajout de plus de détails et de la commune -->
+        <record id="res_partner_view_form_mediano" model="ir.ui.view">
+            <field name="name">res.partner.view.form.inherit.mediano</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//*[hasclass('o_address_format')]/field[@name='zip']" position="after">
+                    <field name="commune_id" placeholder="Commune..." class="o_address_zip"/>
+                    <field name="plus_detail" placeholder="Plus de détails" class="o_address_street"/>
+                </xpath>
+                <xpath expr="//notebook//field[@name='child_ids']//sheet//*[hasclass('o_address_format')]/field[@name='street2']"
+                       position="after">
+                    <field name="commune_id" placeholder="Commune..." class="o_address_zip"/>
+                    <field name="plus_detail" placeholder="Plus de détails" class="o_address_street"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- mise en place du filtre par défaut inscrit depuis le web -->
+        <record id="contacts.action_contacts" model="ir.actions.act_window">
+            <field name="name">Contacts</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form,activity</field>
+            <field name="search_view_id" ref="base.view_res_partner_filter"/>
+            <field name="context">{'search_default_commercial_partner_id':1, 'default_is_company': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Contact in your address book
+                </p>
+                <p>
+                    Odoo helps you track all activities related to your contacts.
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>
