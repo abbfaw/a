@@ -1,0 +1,101 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* pos_delete_orderline
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-22 17:45+0000\n"
+"PO-Revision-Date: 2023-05-22 17:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: pos_delete_orderline
+#. odoo-javascript
+#: code:addons/pos_delete_orderline/static/src/js/Misc/NumberBuffer.js:0
+#: code:addons/pos_delete_orderline/static/src/js/delete_orderline.js:0
+#: code:addons/pos_delete_orderline/static/src/js/ticket_screen.js:0
+#, python-format
+msgid "Autorisation"
+msgstr "Authorization"
+
+#. module: pos_delete_orderline
+#: model_terms:ir.ui.view,arch_db:pos_delete_orderline.control_pos_interface
+msgid "Control Refund"
+msgstr "Control Refund"
+
+#. module: pos_delete_orderline
+#: model_terms:ir.ui.view,arch_db:pos_delete_orderline.control_pos_interface
+msgid "Désactiver les Retours (Refund)"
+msgstr "Disable Refunds"
+
+#. module: pos_delete_orderline
+#. odoo-javascript
+#: code:addons/pos_delete_orderline/static/src/js/pos_quantity.js:0
+#, python-format
+msgid "Erreur paiement"
+msgstr "Payment error"
+
+#. module: pos_delete_orderline
+#: model_terms:ir.ui.view,arch_db:pos_delete_orderline.control_pos_interface
+msgid "Gestion des Retours (Refund)"
+msgstr "Returns Management (Refund)"
+
+#. module: pos_delete_orderline
+#. odoo-javascript
+#: code:addons/pos_delete_orderline/static/src/js/pos_quantity.js:0
+#, python-format
+msgid "Impossible de valider une commande avec le prix d'un article à 0 CFA"
+msgstr "Impossible to validate an order with the price of an item at 0 CFA"
+
+#. module: pos_delete_orderline
+#: model:ir.model.fields,field_description:pos_delete_orderline.field_pos_config__hide_refund
+msgid "Ne par Autoriser des Retour (Refund)"
+msgstr "Do not allow returns (Refund)"
+
+#. module: pos_delete_orderline
+#: model:ir.model,name:pos_delete_orderline.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Point of Sale Configuration"
+
+#. module: pos_delete_orderline
+#. odoo-javascript
+#: code:addons/pos_delete_orderline/static/src/xml/RefundButton.xml:0
+#: code:addons/pos_delete_orderline/static/src/xml/RefundButton.xml:0
+#: code:addons/pos_delete_orderline/static/src/xml/RefundButton.xml:0
+#, python-format
+msgid "Refund"
+msgstr "Refund"
+
+#. module: pos_delete_orderline
+#: model:res.groups,name:pos_delete_orderline.group_pos_reponsable_user
+msgid "Utilisateur Responsable"
+msgstr "Responsible User"
+
+#. module: pos_delete_orderline
+#. odoo-javascript
+#: code:addons/pos_delete_orderline/static/src/js/ticket_screen.js:0
+#, python-format
+msgid ""
+"Vous n'êtes pas autorisés à supprimer ces commandes. Veilliez contacter "
+"votre responsable"
+msgstr ""
+"You are not allowed to delete these orders. Please contact"
+"your manager"
+
+#. module: pos_delete_orderline
+#. odoo-javascript
+#: code:addons/pos_delete_orderline/static/src/js/Misc/NumberBuffer.js:0
+#: code:addons/pos_delete_orderline/static/src/js/delete_orderline.js:0
+#, python-format
+msgid ""
+"Vous ne pouvez pas supprimer un article dans le panier, attribuer une "
+"quantité négative ou le mettre à 0, veuillez contacter votre Responsable."
+msgstr ""
+"You cannot delete an item in the cart, assign a "
+" negative quantity or set it to 0, please contact your Manager."

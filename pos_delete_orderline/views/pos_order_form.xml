@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="control_pos_interface" model="ir.ui.view">
+        <field name="name">Control POS</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='other_devices']" position="after">
+                <br/><br/><br/>
+                <h2 >Gestion des Retours (Refund)</h2>
+                <div class="row mt16 o_settings_container">
+
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="hide_refund"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="hide_refund" string="Control Refund"/>
+                                <div class="text-muted">
+                                    Désactiver les Retours (Refund)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
